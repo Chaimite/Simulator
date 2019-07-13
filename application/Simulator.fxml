@@ -11,7 +11,7 @@
       <AnchorPane prefHeight="726.0" prefWidth="908.0">
          <children>
             <Circle fx:id="lane" fill="#252626" layoutX="427.0" layoutY="326.0" radius="115.0" stroke="WHITE" strokeWidth="2.0" />
-            <Circle fx:id="green_center" fill="#1fff32" layoutX="427.0" layoutY="326.0" radius="100.0" stroke="BLACK" />
+            <Circle fx:id="greenCenter" fill="#1fff32" layoutX="427.0" layoutY="326.0" radius="100.0" stroke="BLACK" />
             <Rectangle fx:id="vehicle" arcHeight="5.0" arcWidth="6.0" fill="DODGERBLUE" height="14.0" layoutX="514.0" layoutY="319.0" rotate="90.0" stroke="BLACK" strokeType="INSIDE" width="41.0" />
             <Button fx:id="addLane" layoutX="628.0" layoutY="50.0" mnemonicParsing="false" onAction="#addLaneOnClick" text="add lane" />
             <Button fx:id="removeLane" layoutX="720.0" layoutY="50.0" mnemonicParsing="false" onAction="#removeLaneOnClick" text="remove lane" />
