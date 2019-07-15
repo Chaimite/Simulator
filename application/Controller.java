@@ -22,9 +22,6 @@ public class Controller implements Initializable
    private Rectangle vehicle;
 
    @FXML
-   private Circle lane;
-
-   @FXML
    private Circle trackCenter;
 
    @FXML
@@ -40,11 +37,7 @@ public class Controller implements Initializable
 
    public void addLaneOnClick(ActionEvent event) throws IOException
    {
-      // This method will make the button add a track    
-      // Still needs to have a location(coordinates), and probably the
-      // anchor pane
-      // Not sure if I should give it a return different from void
-      double newLaneRadius = 20;
+      // This method will make the button add a track        
 
       // Data about coordinates to center objects according with the track
       // center
@@ -52,27 +45,23 @@ public class Controller implements Initializable
       double centerYCoordinate = trackCenter.getLayoutY();
 
       // Data from initial track
-     double innerRadius = lane.getRadius();
-      double outerRadius = lane.getRadius() + newLaneRadius;
+      // Need to fix this plus 12 and plus 22
+      double innerRadius = trackCenter.getRadius()+ 12;
+      double outerRadius = trackCenter.getRadius() + 22;
       
      
-      
-      Circle outerCircle = new Circle(centerXCoordinate,centerYCoordinate,outerRadius,Color.TRANSPARENT);
-    
+      // The  new lane
+      Circle outerCircle = new Circle(centerXCoordinate,centerYCoordinate,outerRadius,Color.TRANSPARENT);    
       outerCircle.setStroke(Color.rgb(211, 211, 211));
-      outerCircle.setStrokeWidth(20);
+      outerCircle.setStrokeWidth(25);
       
-      
+      // The inner road marks
       Circle innerCircle = new Circle(centerXCoordinate, centerYCoordinate,innerRadius, Color.TRANSPARENT);
       innerCircle.setStroke(Color.BLACK);
-      innerCircle.getStrokeDashArray().add(45d);
+      innerCircle.getStrokeDashArray().add(10d);
       
       track.getChildren().addAll(outerCircle,innerCircle);
-      Stack<Circle> test = new Stack<>();
-      for (Circle circle : test)
-      {
-         test.add(circle);         
-      }     
+       
    }
 
    public void removeLaneOnClick(ActionEvent event)
@@ -91,7 +80,7 @@ public class Controller implements Initializable
       PathTransition transition = new PathTransition();
       transition.setNode(vehicle);
       transition.setDuration(Duration.seconds(5));
-      transition.setPath(this.lane);
+      transition.setPath(this.trackCenter);
       transition.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
       transition.setCycleCount(PathTransition.INDEFINITE);
       transition.play();
@@ -100,13 +89,13 @@ public class Controller implements Initializable
    @Override
    public void initialize(URL location, ResourceBundle resources)
    {
-      
+     
       
       
       
       // Establish path format and radius
       double radius = 110;
-      vehicle(lane.getCenterX(), lane.getCenterY(), radius);
+      vehicle(trackCenter.getCenterX(), trackCenter.getCenterY(), radius);
 
    }
 }
