@@ -15,7 +15,7 @@ public class Main extends Application {
 		try {
 		   double width = 1000;
 		   double height = 800;
-			Parent root = FXMLLoader.load(getClass().getResource("simulator.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("Sim2.fxml"));
 			Scene scene = new Scene(root,width,height);
 			
 			primaryStage.setScene(scene);

@@ -5,7 +5,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane fx:id="track" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="726.0" prefWidth="908.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+<AnchorPane fx:id="track" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="726.0" prefWidth="908.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" >
          <children>
             <Circle fx:id="trackCenter" fill="#1fff32" layoutX="427.0" layoutY="326.0" radius="100.0" stroke="LIGHTGRAY" strokeWidth="25.0" />
             <Rectangle fx:id="vehicle" arcHeight="5.0" arcWidth="6.0" fill="DODGERBLUE" height="14.0" rotate="90.0" stroke="BLACK" strokeType="INSIDE" width="41.0" />
