@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Stack;
-
 import javafx.animation.PathTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 
+import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -35,24 +33,40 @@ public class Controller implements Initializable
    @FXML
    private StackPane track;
    
+   @FXML
+   private StackPane vehicleStackPane;
    
+   
+   private PathTransition transition;
+   private double centerXCoordinate;
+   private double centerYCoordinate;
+   
+   private Circle outerCircle;
+   private double lastElementRadius;
+   private Circle lastElementInTrack;
+//   private double elementRadius;
+   private double newRadius;
+   private Stack<Circle> trackStack = new Stack<>();
+   private int elementsInTrack;
 
    public void addLaneOnClick(ActionEvent event) throws IOException
    {
       // This method will make the button add a track
-
-      // Data about coordinates to center objects according with the track
-      // center
-      double centerXCoordinate = trackCenter.getLayoutX();
-      double centerYCoordinate = trackCenter.getLayoutY();
-
+      
       // Data from initial track
-      // Need to fix this plus 12 and plus 22
-      double innerRadius = trackCenter.getRadius() + 12;
-      double outerRadius = trackCenter.getRadius() + 22;
+      lastElementInTrack = trackStack.peek();
+      centerXCoordinate = lastElementInTrack.getLayoutX();
+      centerYCoordinate = lastElementInTrack.getLayoutY();
+      
+      lastElementRadius = lastElementInTrack.getRadius();
+      
+      newRadius = lastElementRadius + 22;
+      System.out.println("outer radius: " + lastElementRadius);
+      
+      System.out.println("new radius " + newRadius);
 
       // The new lane
-      Circle outerCircle = new Circle(centerXCoordinate, centerYCoordinate,outerRadius, Color.TRANSPARENT);
+      outerCircle = new Circle(centerXCoordinate, centerYCoordinate,newRadius, Color.TRANSPARENT);
       outerCircle.setStroke(Color.rgb(211, 211, 211));
       outerCircle.setStrokeWidth(25);
 
@@ -61,29 +75,26 @@ public class Controller implements Initializable
 //      innerCircle.setStroke(Color.BLACK);
 //      innerCircle.getStrokeDashArray().add(10d);
 
-      track.getChildren().addAll(outerCircle);
-      System.out.println(track.getChildren().size());
-
+      // Placing the circle in the stack
+      track.getChildren().addAll(trackStack.push(outerCircle));
    }
 
    public void removeLaneOnClick(ActionEvent event)
    {
-      // This method will make the button remove a track
-      int elementsInTrack = track.getChildren().size();
-      
+      // This method will make the button remove a track 
+      elementsInTrack = track.getChildren().size();
       if (elementsInTrack >= 3)
-         track.getChildren().remove(track.getChildren().get(elementsInTrack - 1));
+         track.getChildren().remove(trackStack.pop());       
    }
 
    void path(double xCoordinate, double yCoordinate, double radius)
    {
       // Transition type for vehicle
-      PathTransition transition = new PathTransition();
+      transition = new PathTransition();
       transition.setNode(vehicle);
       transition.setDuration(Duration.seconds(5));
       transition.setPath(this.trackCenter);
-      transition.setOrientation(
-            PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
+      transition.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
       transition.setCycleCount(PathTransition.INDEFINITE);
       transition.play();
 
@@ -92,10 +103,12 @@ public class Controller implements Initializable
    @Override
    public void initialize(URL location, ResourceBundle resources)
    {
-
+      trackStack.push(trackCenter);
       // Establish path format and radius
       double radius = 110;
       path(trackCenter.getCenterX(), trackCenter.getCenterY(), radius);
+//      vehicleStackPane.setBackground(rgb);
+     
 
    }
 }
