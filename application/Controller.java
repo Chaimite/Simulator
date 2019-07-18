@@ -63,19 +63,8 @@ public class Controller implements Initializable
    
    
    
-   @FXML
-   public void handleDragDetected(DragEvent event) {
-      Dragboard db = blockObject.startDragAndDrop(TransferMode.ANY);
-      
-      ClipboardContent cb = new ClipboardContent();
-//      cb.put
-//      db.setContent(cb);
-      event.consume();
-   }
    public void addLaneOnClick(ActionEvent event) throws IOException
-   {
-      
-     
+   {  
       // This method will make the button add a track
       
       // Data from the last inserted lane
@@ -141,8 +130,12 @@ public class Controller implements Initializable
       
       // Makes the vehicle stack pane transparent
       vehicleStackPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.2);");
-      class Delta{double x,y;}
+      // Make the blocking object draggable
+      
+
+      
       Delta dragDelta = new Delta();
+
       blockObject.setOnMousePressed(new EventHandler<MouseEvent>()
       {
          @Override
@@ -150,23 +143,28 @@ public class Controller implements Initializable
          {
             dragDelta.x = blockObject.getCenterX() - event.getX();
             dragDelta.y = blockObject.getCenterY() - event.getY();
-            blockObject.getScene().setCursor(Cursor.MOVE);        
-         }});
-      
+            blockObject.getScene().setCursor(Cursor.MOVE);
+         }
+      });
+
       blockObject.setOnMouseReleased(new EventHandler<MouseEvent>()
       {
          @Override
          public void handle(MouseEvent event)
          {
-            blockObject.getScene().setCursor(Cursor.HAND);          
-         }});
-      
-      blockObject.setOnMouseDragged(new EventHandler<MouseEvent>() {
-         @Override public void handle(MouseEvent mouseEvent) {
-           blockObject.setCenterX(mouseEvent.getX() + dragDelta.x);
-           blockObject.setCenterY(mouseEvent.getY() + dragDelta.y);
+            blockObject.getScene().setCursor(Cursor.HAND);
          }
-       });
+      });
 
-   }
+      blockObject.setOnMouseDragged(new EventHandler<MouseEvent>()
+      {
+         @Override
+         public void handle(MouseEvent mouseEvent)
+         {
+            blockObject.setCenterX(mouseEvent.getX() + dragDelta.x);
+            blockObject.setCenterY(mouseEvent.getY() + dragDelta.y);
+         }
+      });
+      }
+   
 }
