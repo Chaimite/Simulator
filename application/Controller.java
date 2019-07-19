@@ -5,9 +5,13 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Stack;
 
-import com.sun.corba.se.spi.ior.MakeImmutable;
-
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.PathTransition;
+import javafx.animation.Timeline;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,6 +27,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
 public class Controller implements Initializable
@@ -48,6 +53,11 @@ public class Controller implements Initializable
    @FXML
    private Circle blockObject;
   
+   @FXML
+   private Button pause;
+
+   @FXML
+   private Button proceed;
    
    private PathTransition transition;
    private double centerXCoordinate;
@@ -112,7 +122,7 @@ public class Controller implements Initializable
       transition.setDuration(Duration.seconds(5));
       transition.setPath(this.baseTrack);
       transition.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
-      transition.setCycleCount(PathTransition.INDEFINITE);
+      transition.setCycleCount(Timeline.INDEFINITE);
       transition.play();
 
    }
@@ -124,16 +134,29 @@ public class Controller implements Initializable
       // Inserts the first part of the track
       trackStack.push(baseTrack);
       // Establish path format and radius
-      double radius = 110;
-      path(vehicleStackPane.getLayoutX(), vehicleStackPane.getLayoutY(), radius);
+//      double radius = 110;
+//      path(vehicleStackPane.getLayoutX(), vehicleStackPane.getLayoutY(), radius);
       
       
       // Makes the vehicle stack pane transparent
       vehicleStackPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.2);");
-      // Make the blocking object draggable
+      DoubleProperty angle = new SimpleDoubleProperty();
+      Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), new KeyValue(angle, 360)));
+      timeline.setCycleCount(Animation.INDEFINITE);
+      timeline.play();
       
-
+      for(int i = 0; i < 2; i++) {
+//         vehicleStackPane.getChildren().get(0);
+         double xCenter = baseTrack.getCenterX();
+         double yCenter = baseTrack.getCenterY();
+         double centerRadius = baseTrack.getRadius();
+         Rotate rotate = new Rotate(xCenter, yCenter,centerRadius);
+         vehicle.getTransforms().add(rotate);
+         rotate.angleProperty().bind(angle.add(360.0 * i / 5));
+         
+         }
       
+     // Make the blocking object draggable
       Delta dragDelta = new Delta();
 
       blockObject.setOnMousePressed(new EventHandler<MouseEvent>()
@@ -155,7 +178,7 @@ public class Controller implements Initializable
             blockObject.getScene().setCursor(Cursor.HAND);
          }
       });
-
+      
       blockObject.setOnMouseDragged(new EventHandler<MouseEvent>()
       {
          @Override
@@ -165,6 +188,27 @@ public class Controller implements Initializable
             blockObject.setCenterY(mouseEvent.getY() + dragDelta.y);
          }
       });
+      // Pause simulation
+      pause.setOnMousePressed(new EventHandler<MouseEvent>()
+      {
+
+         @Override
+         public void handle(MouseEvent event)
+         {
+            timeline.stop();
+            
+         }});
+      // Proceed with simulation
+      proceed.setOnMousePressed(new EventHandler<MouseEvent>()
+      {
+
+         @Override
+         public void handle(MouseEvent event)
+         {
+            timeline.play();
+            
+         }});
       }
+   
    
 }
