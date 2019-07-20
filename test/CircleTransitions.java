@@ -38,7 +38,7 @@ public class CircleTransitions extends Application {
 
 //        group.getChildren().add(path);
 
-        for (int i=0; i<1; i++) {
+        for (int i=0; i<5; i++) {
             Circle circle = new Circle(250, 450, 15);
             circle.setFill(Color.DARKRED);
             Rotate rotate = new Rotate(0, 250, 250);
