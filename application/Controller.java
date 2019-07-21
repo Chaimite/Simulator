@@ -14,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -53,7 +54,7 @@ public class Controller implements Initializable
    private Button proceed;
 
    @FXML
-   private ScrollBar velocityHandler;
+   private Slider velocityHandler;
    
    private double centerXCoordinate;
    private double centerYCoordinate;   
@@ -137,6 +138,7 @@ public class Controller implements Initializable
    void addLaneOnClick(MouseEvent event) {
    // This method will make the button add a track
       // Data from the last inserted lane
+      
       lastElementInTrack = trackStack.peek();
       centerXCoordinate = lastElementInTrack.getLayoutX();
       centerYCoordinate = lastElementInTrack.getLayoutY();
