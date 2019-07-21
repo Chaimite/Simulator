@@ -2,7 +2,6 @@ package application;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Stack;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -13,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -23,6 +21,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
+import model.Track;
 
 public class Controller implements Initializable
 {
@@ -30,7 +29,7 @@ public class Controller implements Initializable
    private Rectangle vehicle;
 
    @FXML
-   private Circle baseTrack;
+   private Circle baseLane;
 
    @FXML
    private Button addLane;
@@ -39,7 +38,7 @@ public class Controller implements Initializable
    private Button removeLane;
 
    @FXML
-   private StackPane track;
+   private StackPane trackPane;
 
    @FXML
    private Pane vehicleStackPane;
@@ -61,21 +60,21 @@ public class Controller implements Initializable
    private Circle outerCircle;
    private double lastElementRadius;
    private Circle lastElementInTrack;
-   private double laneRadius = 22;
-   private double newRadius;
-   private Stack<Circle> trackStack = new Stack<>();
+   private final double laneRadius = 22;
+   private double newRadius; 
    private int elementsInTrack;
    private Timeline timeline;
    private  Delta dragDelta =  new Delta(); 
    private DoubleProperty angle = new SimpleDoubleProperty();
    private Rotate rotate;
+   private Track track;
         
    @Override
    public void initialize(URL location, ResourceBundle resources)
    {
-    
+      
+      track = new Track(trackPane, baseLane);
       // Inserts the first part of the track
-      trackStack.push(baseTrack);
 
       // Makes the vehicle stack pane transparent
       vehicleStackPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0);");
@@ -88,17 +87,18 @@ public class Controller implements Initializable
 
       for (int i = 0; i < 1; i++)
       {        
-         double xCenter = baseTrack.getCenterX();
-         double yCenter = baseTrack.getCenterY() ;
+         double xCenter = baseLane.getCenterX();
+         double yCenter = baseLane.getCenterY() ;
 //         double xCenter = 213;
 //         double yCenter = 200;
-         double centerRadius = baseTrack.getRadius();
+         double centerRadius = baseLane.getRadius();
          System.out.println(xCenter);
          System.out.println(yCenter);
          System.out.println(centerRadius);
          rotate = new Rotate(xCenter, yCenter, centerRadius);
          
          vehicle.getTransforms().add(rotate);
+         
          rotate.angleProperty().bind(angle.add(360.0 * i / 5));
       }     
    }
@@ -107,6 +107,10 @@ public class Controller implements Initializable
    @FXML
    void blockingElementReleased(MouseEvent event) {
       blockObject.getScene().setCursor(Cursor.HAND);
+      System.out.println("object x " + blockObject.getCenterX());
+      System.out.println("object y " + blockObject.getCenterY());
+//      System.out.println("vehcile x " + vehicle.ge);
+      System.out.println("vehcile y " + vehicle.getTranslateY());
    }
    
    @FXML
@@ -135,13 +139,14 @@ public class Controller implements Initializable
    
    // Adding and removing lanes
    @FXML
-   void addLaneOnClick(MouseEvent event) {
-   // This method will make the button add a track
-      // Data from the last inserted lane
+   void addLaneOnClick(MouseEvent event) {     
+      elementsInTrack = trackPane.getChildren().size();
+      if (!(elementsInTrack <= 4))
+      {
+         return;
+      }
       
-      lastElementInTrack = trackStack.peek();
-      centerXCoordinate = lastElementInTrack.getLayoutX();
-      centerYCoordinate = lastElementInTrack.getLayoutY();
+      lastElementInTrack = track.getLanes().peek();
       lastElementRadius = lastElementInTrack.getRadius();
 
       // A new lane
@@ -151,28 +156,17 @@ public class Controller implements Initializable
       outerCircle.setStroke(Color.rgb(211, 211, 211));
       outerCircle.setStrokeWidth(25);
 
-      // The inner road marks
-      // Circle innerCircle = new Circle(centerXCoordinate,
-      // centerYCoordinate,innerRadius, Color.TRANSPARENT);
-      // innerCircle.setStroke(Color.BLACK);
-      // innerCircle.getStrokeDashArray().add(10d);
-
       // Placing the circle in the stack
-      elementsInTrack = track.getChildren().size();
+      trackPane.getChildren().add(track.getLanes().push(outerCircle));
       
-      if (elementsInTrack <= 4)
-      {
-         track.getChildren().addAll(trackStack.push(outerCircle));
-      }
    }
+   
    @FXML
    void removeLaneOnClick(MouseEvent event) {
-      // This method will make the button remove a track, but will not allow to
-      // remove the base track
-      elementsInTrack = track.getChildren().size();
-      if (elementsInTrack >= 2)
+      elementsInTrack = track.getTrackPane().getChildren().size();
+      if (elementsInTrack >= 3)
       {
-         track.getChildren().remove(trackStack.pop());
+         trackPane.getChildren().remove(track.getLanes().pop());
       }
    }
 }

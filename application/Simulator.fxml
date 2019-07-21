@@ -40,9 +40,9 @@
       </AnchorPane>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="700.0" SplitPane.resizableWithParent="false">
          <children>
-            <StackPane fx:id="track" alignment="CENTER" prefHeight="798.0" prefWidth="692.0">
+            <StackPane fx:id="trackPane" alignment="CENTER" prefHeight="798.0" prefWidth="692.0">
                <children>
-                  <Circle fx:id="baseTrack" fill="#1fff32" radius="100.0" stroke="LIGHTGRAY" strokeWidth="25.0" />
+                  <Circle fx:id="baseLane" fill="#1fff32" radius="100.0" stroke="LIGHTGRAY" strokeWidth="25.0" />
                   <Pane fx:id="vehicleStackPane" prefHeight="798.0" prefWidth="692.0">
                      <children>
                         <Rectangle fx:id="vehicle" arcHeight="5.0" arcWidth="6.0" fill="DODGERBLUE" height="15.0" layoutX="346.0" layoutY="297.0" stroke="BLACK" strokeType="INSIDE" width="30.0" />
