@@ -54,7 +54,7 @@ public class CircleTransitions extends Application {
          @Override
          public void handle(MouseEvent event)
          {
-            timeline.stop();
+            
             
          }});
     }
