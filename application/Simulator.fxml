@@ -13,7 +13,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
 
-<SplitPane dividerPositions="0.8967935871743486" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+<SplitPane dividerPositions="0.30060120240480964" pickOnBounds="false" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
   <items>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="300.0" SplitPane.resizableWithParent="false">
          <children>
@@ -39,17 +39,19 @@
       </AnchorPane>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="700.0" SplitPane.resizableWithParent="false">
          <children>
-            <StackPane fx:id="trackPane" alignment="CENTER" prefHeight="798.0" prefWidth="692.0">
+            <StackPane fx:id="trackPane" alignment="CENTER" pickOnBounds="false" prefHeight="798.0" prefWidth="692.0">
                <children>
-                  <Circle fx:id="baseCarriageway" fill="#1fff32" radius="100.0" stroke="LIGHTGRAY" strokeWidth="25.0" />
-                  <Pane fx:id="vehicleStackPane" prefHeight="798.0" prefWidth="692.0">
-                     <children>
-                        <Rectangle fx:id="vehicle" arcHeight="5.0" arcWidth="6.0" fill="DODGERBLUE" height="15.0" layoutX="346.0" layoutY="297.0" stroke="BLACK" strokeType="INSIDE" width="30.0" />
-                     </children>
-                  </Pane>
+                  <Circle fx:id="baseCarriageway" fill="#ffffff00" radius="100.0" stroke="LIGHTGRAY" strokeWidth="25.0" />
+                  <Circle fill="#f5f6f700" radius="115.0" stroke="#ffffff00" strokeType="INSIDE" strokeWidth="2.0" />
+                  <Circle fill="#ffffff00" radius="87.0" stroke="BLACK" strokeType="INSIDE" />
                </children>
             </StackPane>
-            <Circle fx:id="blockObject" fill="#ff1f1f" layoutX="667.0" layoutY="23.0" onDragEntered="#blockingElementClicked" onMouseDragged="#blockingElementDragged" onMouseReleased="#blockingElementReleased" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
+            <Pane fx:id="vehicleStackPane" pickOnBounds="false" prefHeight="798.0" prefWidth="692.0">
+               <children>
+                  <Rectangle fx:id="vehicle" arcHeight="5.0" arcWidth="6.0" fill="DODGERBLUE" height="15.0" layoutX="346.0" layoutY="297.0" rotate="-6.0" stroke="BLACK" strokeType="INSIDE" width="30.0" />
+               </children>
+            </Pane>
+            <Circle fx:id="blockObject" fill="#ff1f1f" layoutX="667.0" layoutY="23.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
          </children>
       </AnchorPane>
   </items>
