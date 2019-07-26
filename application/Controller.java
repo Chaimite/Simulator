@@ -61,7 +61,6 @@ public class Controller implements Initializable
    private Carriageway track;
    private boolean isMoving = true;
    private ArrayList<Circle> availableLanes;
-   private double mainSceneX, mainSceneY;
    
    
    @Override
@@ -95,8 +94,10 @@ public class Controller implements Initializable
       
       // Get coordinates of block object
       blockObject.setOnMousePressed((t) -> {
-         mainSceneX = t.getSceneX();
-         mainSceneY = t.getSceneY();
+
+//         double mainSceneX, mainSceneY;
+//         mainSceneX = t.getSceneX();
+//         mainSceneY = t.getSceneY();
 
          Circle r = (Circle) (t.getSource());
          r.toFront();
@@ -105,11 +106,12 @@ public class Controller implements Initializable
        });
       // Making the object move
       blockObject.setOnMouseDragged((t) -> {
+//         double mainSceneX, mainSceneY;
          blockObject.setCenterX(t.getX() + dragDelta.x);
          blockObject.setCenterY(t.getY() + dragDelta.y);
 
-         mainSceneX = t.getSceneX();
-         mainSceneY = t.getSceneY();
+//         mainSceneX = t.getSceneX();
+//         mainSceneY = t.getSceneY();
          checkBounds(blockObject);
        });
       
@@ -124,23 +126,28 @@ public class Controller implements Initializable
       boolean collisionDetected = false;
            
       Circle collisionCircle = null;
-      
-      for (Circle c : availableLanes) {      
 
-          if (block.getBoundsInParent().intersects(c.getBoundsInParent())) {
+      for (Circle c : availableLanes)
+      {
+
+         if (block.getBoundsInParent().intersects(c.getBoundsInParent()))
+         {
             collisionDetected = true;
             collisionCircle = c;
-          }
+         }
       }
 
-      if (collisionDetected) {
-        block.setFill(Color.GREEN);
-        collisionCircle.setStroke(Color.GREEN);
-      } else {
-        block.setFill(Color.BLUE);
+      if (collisionDetected)
+      {
+         block.setFill(Color.GREEN);
+         collisionCircle.setStroke(Color.GREEN);
       }
-    }
-   
+      else
+      {
+         block.setFill(Color.BLUE);
+      }
+   }
+
    @FXML
    void playPauseAction(MouseEvent event) {
    
