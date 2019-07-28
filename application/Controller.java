@@ -3,12 +3,8 @@ package application;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.animation.Interpolator;
+import javafx.animation.PathTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
@@ -21,7 +17,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import model.Carriageway;
 
@@ -54,77 +49,126 @@ public class Controller implements Initializable
    @FXML
    private Slider velocityHandler;
 
-   private Timeline timeline;
    private Delta dragDelta =  new Delta(); 
-   private DoubleProperty angle = new SimpleDoubleProperty();
-   private Rotate rotate;
    private Carriageway track;
    private boolean isMoving = true;
    private ArrayList<Circle> availableLanes;
-   
-   
+   private ArrayList<Shape> nodes;
+   private PathTransition transition = new PathTransition();
+     
    @Override
    public void initialize(URL location, ResourceBundle resources)
    {    
       track = new Carriageway(trackPane, baseCarriageway.getRadius());
-//      System.out.println("lanes " + track.getLanes().size());
 
       // Makes the vehicle stack pane transparent
       vehicleStackPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0);");
       
-      // Makes the vehicle go around in a circle     
-      timeline = new Timeline(new KeyFrame(Duration.seconds(5), new KeyValue(angle, 360)));
-      timeline.setCycleCount(Animation.INDEFINITE);
-      timeline.play();
-
-      for (int i = 0; i < 1; i++)
-      {        
-         double xCenter = baseCarriageway.getCenterX();
-         double yCenter = baseCarriageway.getCenterY() ;
-         double centerRadius = baseCarriageway.getRadius();
-         rotate = new Rotate(xCenter, yCenter, centerRadius);
-         
-         vehicle.getTransforms().add(rotate);
-         
-         rotate.angleProperty().bind(angle.add(360.0 * i / 5));
-         
-      }     
-      // Make cursor change when it's on top of blocking element
-      blockObject.setCursor(Cursor.HAND);
+      // Makes the vehicle go around in a circle   
+      makeVehicleMove();
       
       // Get coordinates of block object
+      setMouseOnPressed();
+      
+      // Making the object move
+      setMouseOnDragged();
+      
+      // Action taken when object is released
+      setMouseReleased();
+      nodes = new ArrayList<>();
+      nodes.add(vehicle);
+      nodes.add(blockObject);
+      
+      blockObject.boundsInParentProperty()
+            .addListener((observable, oldValue,
+                  newValue) -> checkCollisionBetweenBlockingElementAndVehicle(
+                        blockObject));
+   }
+   
+   public void setMouseOnPressed()
+   {
       blockObject.setOnMousePressed((t) -> {
 
-//         double mainSceneX, mainSceneY;
-//         mainSceneX = t.getSceneX();
-//         mainSceneY = t.getSceneY();
-
+         // Make cursor change when it's on top of blocking element
+         blockObject.setCursor(Cursor.HAND);
          Circle r = (Circle) (t.getSource());
          r.toFront();
          availableLanes = track.getAllAvailableLanes();
-         availableLanes.add(baseCarriageway);
-       });
-      // Making the object move
+         availableLanes.add(baseCarriageway);       
+      });
+   }
+
+   public void setMouseReleased()
+   {
+//      blockObject.setOnMouseReleased((t) -> {
+//         checkCollisionBetweenBlockingElementAndVehicle(nodes.get(nodes.size() - 1));
+//
+//         System.out.println("set on mouse being released");
+//      });    
+   }
+
+   public void setMouseOnDragged()
+   {
       blockObject.setOnMouseDragged((t) -> {
-//         double mainSceneX, mainSceneY;
          blockObject.setCenterX(t.getX() + dragDelta.x);
          blockObject.setCenterY(t.getY() + dragDelta.y);
-
-//         mainSceneX = t.getSceneX();
-//         mainSceneY = t.getSceneY();
          checkBounds(blockObject);
-       });
-      
-      blockObject.setOnMouseReleased((t) -> {
-        
-       });
-      
-      
+      });
    }
-   // Checks if the objects are colliding
-   private void checkBounds(Shape block) {
+   
+   // Makes the vehicle go around the lane
+   private void makeVehicleMove()
+   {
+//      timeline = new Timeline(
+//            new KeyFrame(Duration.seconds(5), new KeyValue(angle, 360)));
+//      timeline.setCycleCount(Animation.INDEFINITE);
+//      timeline.play();
+//
+//      for (int i = 0; i < 1; i++)
+//      {
+//         double xCenter = baseCarriageway.getCenterX();
+//         double yCenter = baseCarriageway.getCenterY();
+//         double centerRadius = baseCarriageway.getRadius();
+//         rotate = new Rotate(xCenter, yCenter, centerRadius);
+//
+//         vehicle.getTransforms().add(rotate);
+//
+//         rotate.angleProperty().bind(angle.add(360.0 * i / 5));
+//      }
+
+    // Establish what object to follow path
+    transition.setNode(vehicle);
+    transition.setDuration(Duration.seconds(5));
+    transition.setPath(baseCarriageway);
+    transition.setInterpolator(Interpolator.LINEAR);
+    transition.setOrientation(
+          PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
+    transition.setCycleCount(PathTransition.INDEFINITE);
+    transition.play();   
+   }
+
+   private void checkCollisionBetweenBlockingElementAndVehicle(Shape block) {
       boolean collisionDetected = false;
-           
+      for(Shape static_bloc : nodes) {
+         if(static_bloc != block) {
+
+            Shape intersect = Shape.intersect(vehicle, blockObject);
+            if (intersect.getBoundsInParent().getWidth() != -1) {
+               collisionDetected = true;
+            }
+         }
+      }
+      if(collisionDetected) {
+        vehicle.setFill(Color.YELLOW);
+      }
+      else {
+         vehicle.setFill(Color.RED);
+      }
+   }
+   // Checks if the blocking object and the lane are colliding
+   private void checkBounds(Shape block)
+   {
+      boolean collisionDetected = false;
       Circle collisionCircle = null;
 
       for (Circle c : availableLanes)
@@ -149,18 +193,17 @@ public class Controller implements Initializable
    }
 
    @FXML
-   void playPauseAction(MouseEvent event) {
-   
+   void playPauseAction(MouseEvent event)
+   {
       if (isMoving)
       {
-         timeline.pause();
+         transition.pause();
          playPause.setText("Play");
          isMoving = false;
-         System.out.println("x coordinate vehicle: " + vehicle.getTranslateX());
       }
       else
       {
-         timeline.play();
+         transition.play();
          playPause.setText("Pause");
          isMoving = true;
       }
@@ -168,12 +211,15 @@ public class Controller implements Initializable
 
    // Adding and removing lanes
    @FXML
-   void addLaneOnClick(MouseEvent event) {     
-      track.addLane();     
+   void addLaneOnClick(MouseEvent event)
+   {
+      track.addLane();
+      vehicle.toFront();
    }
-   
+
    @FXML
-   void removeLaneOnClick(MouseEvent event) {
+   void removeLaneOnClick(MouseEvent event)
+   {
       track.removeLane();
    }
 }
