@@ -19,11 +19,12 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import model.Carriageway;
+import model.Vehicle;
 
 public class Controller implements Initializable
 {
-   @FXML
-   private Rectangle vehicle;
+//   @FXML
+//   private Rectangle vehicle;
 
    @FXML
    private Circle baseCarriageway;
@@ -55,7 +56,8 @@ public class Controller implements Initializable
    private ArrayList<Circle> availableLanes;
    private ArrayList<Shape> nodes;
    private PathTransition transition = new PathTransition();
-     
+   
+   private Vehicle vehicle = new Vehicle();     
    @Override
    public void initialize(URL location, ResourceBundle resources)
    {    
@@ -74,7 +76,6 @@ public class Controller implements Initializable
       setMouseOnDragged();
       
       // Action taken when object is released
-      setMouseReleased();
       nodes = new ArrayList<>();
       nodes.add(vehicle);
       nodes.add(blockObject);
@@ -98,15 +99,6 @@ public class Controller implements Initializable
       });
    }
 
-   public void setMouseReleased()
-   {
-//      blockObject.setOnMouseReleased((t) -> {
-//         checkCollisionBetweenBlockingElementAndVehicle(nodes.get(nodes.size() - 1));
-//
-//         System.out.println("set on mouse being released");
-//      });    
-   }
-
    public void setMouseOnDragged()
    {
       blockObject.setOnMouseDragged((t) -> {
@@ -119,23 +111,6 @@ public class Controller implements Initializable
    // Makes the vehicle go around the lane
    private void makeVehicleMove()
    {
-//      timeline = new Timeline(
-//            new KeyFrame(Duration.seconds(5), new KeyValue(angle, 360)));
-//      timeline.setCycleCount(Animation.INDEFINITE);
-//      timeline.play();
-//
-//      for (int i = 0; i < 1; i++)
-//      {
-//         double xCenter = baseCarriageway.getCenterX();
-//         double yCenter = baseCarriageway.getCenterY();
-//         double centerRadius = baseCarriageway.getRadius();
-//         rotate = new Rotate(xCenter, yCenter, centerRadius);
-//
-//         vehicle.getTransforms().add(rotate);
-//
-//         rotate.angleProperty().bind(angle.add(360.0 * i / 5));
-//      }
-
     // Establish what object to follow path
     transition.setNode(vehicle);
     transition.setDuration(Duration.seconds(5));
