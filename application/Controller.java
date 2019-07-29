@@ -122,6 +122,8 @@ public class Controller implements Initializable
     transition.play();   
    }
 
+   
+   
    private void checkCollisionBetweenBlockingElementAndVehicle(Shape block) {
       boolean collisionDetected = false;
       for(Shape static_bloc : nodes) {
