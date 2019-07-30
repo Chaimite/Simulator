@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
@@ -18,6 +19,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
+import model.BlockingElement;
 import model.Carriageway;
 import model.Vehicle;
 
@@ -54,10 +56,15 @@ public class Controller implements Initializable
    private Carriageway track;
    private boolean isMoving = true;
    private ArrayList<Circle> availableLanes;
-   private ArrayList<Shape> nodes;
+//   private ArrayList<Shape> nodes;
    private PathTransition transition = new PathTransition();
    
-   private Vehicle vehicle = new Vehicle();     
+   private Vehicle vehicle = new Vehicle(); 
+   
+   private BlockingElement be = new BlockingElement();
+   
+   
+   
    @Override
    public void initialize(URL location, ResourceBundle resources)
    {    
@@ -76,14 +83,16 @@ public class Controller implements Initializable
       setMouseOnDragged();
       
       // Action taken when object is released
-      nodes = new ArrayList<>();
-      nodes.add(vehicle);
-      nodes.add(blockObject);
+//      nodes = new ArrayList<>();
+//      nodes.add(vehicle);
+//      nodes.add(blockObject);
       
-      blockObject.boundsInParentProperty()
-            .addListener((observable, oldValue,
-                  newValue) -> checkCollisionBetweenBlockingElementAndVehicle(
-                        blockObject));
+//      blockObject.boundsInParentProperty()
+//            .addListener((observable, oldValue,
+//                  newValue) -> checkCollisionBetweenBlockingElementAndVehicle(
+//                        blockObject));
+      
+//      SimpleDoubleProperty
    }
    
    public void setMouseOnPressed()
@@ -96,6 +105,12 @@ public class Controller implements Initializable
          r.toFront();
          availableLanes = track.getAllAvailableLanes();
          availableLanes.add(baseCarriageway);       
+      });
+   }
+   public void setOnMouseReleased() {
+      blockObject.setOnMouseReleased((t) ->{
+         bl.setCenterX(blockObject.getCenterX());
+         bl.setCenterY(blockObject.getCenterY());
       });
    }
 
@@ -124,24 +139,24 @@ public class Controller implements Initializable
 
    
    
-   private void checkCollisionBetweenBlockingElementAndVehicle(Shape block) {
-      boolean collisionDetected = false;
-      for(Shape static_bloc : nodes) {
-         if(static_bloc != block) {
-
-            Shape intersect = Shape.intersect(vehicle, blockObject);
-            if (intersect.getBoundsInParent().getWidth() != -1) {
-               collisionDetected = true;
-            }
-         }
-      }
-      if(collisionDetected) {
-        vehicle.setFill(Color.YELLOW);
-      }
-      else {
-         vehicle.setFill(Color.RED);
-      }
-   }
+//   private void checkCollisionBetweenBlockingElementAndVehicle(Shape block) {
+//      boolean collisionDetected = false;
+//      for(Shape static_bloc : nodes) {
+//         if(static_bloc != block) {
+//
+//            Shape intersect = Shape.intersect(vehicle, blockObject);
+//            if (intersect.getBoundsInParent().getWidth() != -1) {
+//               collisionDetected = true;
+//            }
+//         }
+//      }
+//      if(collisionDetected) {
+//        vehicle.setFill(Color.YELLOW);
+//      }
+//      else {
+//         vehicle.setFill(Color.RED);
+//      }
+//   }
    // Checks if the blocking object and the lane are colliding
    private void checkBounds(Shape block)
    {
