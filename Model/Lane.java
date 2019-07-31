@@ -1,9 +1,12 @@
 package model;
 
+import java.util.LinkedList;
+
+import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class Lane 
+public class Lane implements Observable
 {
    private final double laneSize = 25;
    private Circle asphalt;
@@ -11,7 +14,9 @@ public class Lane
    private Circle outerRoadMarks;
    private final Color roadMarksColor = Color.WHITE;
    private final Color circleInsideColor = Color.TRANSPARENT;
-
+   private LinkedList<Vehicle> vehicles = new LinkedList<>();
+   private Bounds blockingBounds;
+   
    public Lane(double radius)
    {
       // The asphalt part
@@ -58,6 +63,36 @@ public class Lane
    public void setOuterRoadMarks(Circle outerRoadMarks)
    {
       this.outerRoadMarks = outerRoadMarks;
+   }
+   
+   public void collisionDetected(Bounds b)
+   {
+      blockingBounds = b;
+      notifyObservers();
+   }
+
+   @Override
+   public void notifyObservers()
+   {
+      for (Vehicle vehicle : vehicles)
+      {
+         vehicle.update(blockingBounds);
+      }
+      
+   }
+
+   @Override
+   public void addObserver(Vehicle vehicle)
+   {
+      vehicles.add(vehicle);
+      
+   }
+
+   @Override
+   public void removeObserver(Vehicle vehicle)
+   {
+      vehicles.remove(vehicle);
+      
    }
 
 }

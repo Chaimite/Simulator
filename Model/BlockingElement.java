@@ -1,9 +1,10 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class BlockingElement implements ObservableBlockingElement
+public class BlockingElement implements Observable
 {
    private double centerX;
    private double centerY;
@@ -38,6 +39,7 @@ public class BlockingElement implements ObservableBlockingElement
    public void setCenterY(double centerY)
    {
       this.centerY = centerY;
+//      vehicles.update();
    }
    
 
@@ -47,22 +49,15 @@ public class BlockingElement implements ObservableBlockingElement
       
       for (Vehicle vehicle : vehicles)
       {
-         vehicle.notify();
-         getCenterX();
-         getCenterY();
+         Iterator<Vehicle> it = vehicles.iterator();
+         while(it.hasNext()) {
+            
+         }
+//         vehicle.update();
+
       }
 
    }  
-
-   @Override
-   public void onLocationChangedUpdate(double centerX, double centerY)
-   {
-      for (Vehicle vehicle : vehicles)
-      {
-         vehicle.notify();
-      }
-      
-   }
 
    @Override
    public void addObserver(Vehicle vehicle)

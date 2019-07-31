@@ -21,6 +21,7 @@ import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import model.BlockingElement;
 import model.Carriageway;
+import model.Lane;
 import model.Vehicle;
 
 public class Controller implements Initializable
@@ -74,14 +75,16 @@ public class Controller implements Initializable
       vehicleStackPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0);");
       
       // Makes the vehicle go around in a circle   
-      makeVehicleMove();
+//      makeVehicleMove();
       
       // Get coordinates of block object
       setMouseOnPressed();
       
       // Making the object move
       setMouseOnDragged();
-      
+      Vehicle v = new Vehicle();
+      Thread t = new Thread(v);
+      t.start();
       // Action taken when object is released
 //      nodes = new ArrayList<>();
 //      nodes.add(vehicle);
@@ -109,8 +112,8 @@ public class Controller implements Initializable
    }
    public void setOnMouseReleased() {
       blockObject.setOnMouseReleased((t) ->{
-         bl.setCenterX(blockObject.getCenterX());
-         bl.setCenterY(blockObject.getCenterY());
+         be.setCenterX(blockObject.getCenterX());
+         be.setCenterY(blockObject.getCenterY());
       });
    }
 
@@ -124,18 +127,18 @@ public class Controller implements Initializable
    }
    
    // Makes the vehicle go around the lane
-   private void makeVehicleMove()
-   {
+//   private void makeVehicleMove()
+//   {
     // Establish what object to follow path
-    transition.setNode(vehicle);
-    transition.setDuration(Duration.seconds(5));
-    transition.setPath(baseCarriageway);
-    transition.setInterpolator(Interpolator.LINEAR);
-    transition.setOrientation(
-          PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
-    transition.setCycleCount(PathTransition.INDEFINITE);
-    transition.play();   
-   }
+//    transition.setNode(vehicle);
+//    transition.setDuration(Duration.seconds(5));
+//    transition.setPath(baseCarriageway);
+//    transition.setInterpolator(Interpolator.LINEAR);
+//    transition.setOrientation(
+//          PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
+//    transition.setCycleCount(PathTransition.INDEFINITE);
+//    transition.play();   
+//   }
 
    
    
@@ -162,14 +165,16 @@ public class Controller implements Initializable
    {
       boolean collisionDetected = false;
       Circle collisionCircle = null;
-
       for (Circle c : availableLanes)
       {
 
          if (block.getBoundsInParent().intersects(c.getBoundsInParent()))
          {
+            
             collisionDetected = true;
             collisionCircle = c;
+            lane.collisionDetected(block.getBoundsInParent());
+            break;
          }
       }
 
@@ -206,7 +211,7 @@ public class Controller implements Initializable
    void addLaneOnClick(MouseEvent event)
    {
       track.addLane();
-      vehicle.toFront();
+//      vehicle.toFront();
    }
 
    @FXML

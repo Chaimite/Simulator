@@ -1,8 +1,7 @@
 package model;
 
-public interface ObservableBlockingElement
+public interface Observable
 {
-  void onLocationChangedUpdate(double centerX, double centerY);
   void notifyObservers();
   void addObserver(Vehicle vehicle);
   void removeObserver(Vehicle vehicle);

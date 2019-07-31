@@ -1,63 +1,65 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
-public class Vehicle implements VehicleObserver
+public class Vehicle implements Observer, Runnable 
 {
    private final double width = 30;
    private final double height = 15;
    private Color fill = Color.GREENYELLOW;
-   private final Rectangle vehicle = new Rectangle(width, height, fill);
+   private Rectangle vehicle;
 
    private PathTransition transition = new PathTransition();
    private Circle path;
-   private BlockingElement be = new BlockingElement();
    
-   private double centerX, centerY;
-   private final double radius = 12;
-   private Circle blockObject;
-   private ArrayList<Shape> nodes;
+   @FXML
+   StackPane trackPane;
 
    @FXML
    Circle baseCarriageway;
-
+   
+   private Bounds blockingBounds;
+   
    public Vehicle()
    {
-      be.addObserver(this);
-      ExecutorService service = Executors.newCachedThreadPool();
-      service.submit(new Runnable()
+      vehicle = new Rectangle(width, height, fill);
+      StackPane.setMargin(vehicle,new Insets(15, 0, 0, 30));
+      setupVehicle();
+   }
+   
+   @Override
+   public void run()
+   {
+      // This will keep the vehicle always moving or wanting to move
+      while(true)                      
       {
-         @Override
-         public void run()
-         {
+         startVehicle();
          
-            blockObject = new Circle(centerX, centerY, radius);
-            checkCollisionBetweenBlockingElementAndVehicle(blockObject);
-            
-            boolean colision = true;
-            if (!colision)
-            {
-               moveVehicle(path);
-            }
-            else  {
-              
-               
-            }
+         while(!checkCollisionBetweenBlockingElementAndVehicle())
+         {
+            // do nothing
          }
-      });
+         // collision detected coming out of the while loop
+         
+         stopVehicle();
+         while(checkCollisionBetweenBlockingElementAndVehicle())
+         {
+            // do nothing
+            // maybe later here see if the car can change lane.
+         }
       }
-
-   public void moveVehicle(Circle path)
+   }
+   
+   public void setupVehicle()
    {
       transition.setNode(this.vehicle);
       transition.setDuration(Duration.seconds(5));
@@ -66,56 +68,50 @@ public class Vehicle implements VehicleObserver
       transition.setOrientation(
             PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
       transition.setCycleCount(PathTransition.INDEFINITE);
-      transition.play();
    }
-
-   public Color getFill()
+   
+   @Override
+   public void update(Bounds b)
    {
-      return fill;
+      blockingBounds = b;
+      
    }
-
-   public void setFill(Color fill)
-   {
-      this.fill = fill;
-   }
-
-   private void checkCollisionBetweenBlockingElementAndVehicle(Shape block)
+   
+   private boolean checkCollisionBetweenBlockingElementAndVehicle()
    {
 
-      boolean collisionDetected = false;
-      for (Shape static_bloc : nodes)
-      {
-         if (static_bloc != block)
-         {
-
-            Shape intersect = Shape.intersect(vehicle, blockObject);
-            if (intersect.getBoundsInParent().getWidth() != -1)
-            {
-               collisionDetected = true;
-            }
-         }
-      }
-      if (collisionDetected)
+//      boolean collisionDetected = false;
+//      for (Shape static_bloc : nodes)
+//      {
+//         if (static_bloc != block)
+//         {
+//
+//            Shape intersect = Shape.intersect(vehicle, blockObject);
+//            if (intersect.getBoundsInParent().getWidth() != -1)
+//            {
+//               collisionDetected = true;
+//            }
+//         }
+//      }
+      if (vehicle.getBoundsInParent().intersects(blockingBounds))
       {
          vehicle.setFill(Color.YELLOW);
+         return true;
       }
       else
       {
          vehicle.setFill(Color.RED);
+         return false;
       }
    }
-
-   @Override
-   public void update()
-   {
-      be.getCenterX();
-      be.getCenterY();
    
-      
+   private void startVehicle()
+   {
+      transition.play();      
    }
-
-  
-  
-
-
+   
+   private void stopVehicle()
+   {
+      transition.pause();
+   }
 }
