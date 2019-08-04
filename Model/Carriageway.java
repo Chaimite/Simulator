@@ -13,15 +13,17 @@ public class Carriageway
    private StackPane trackPane;
    private double radius;
    private int elementsInTrack;
+   
 
-   public Carriageway(StackPane trackPane, double radius)
+   public Carriageway(StackPane trackPane, Circle asphalt)
    {
-      this.radius = radius;
+      LaneFactory.addBaseLane(asphalt);
+      this.radius = asphalt.getRadius();
       this.trackPane = trackPane;
       elementsInTrack = 1;
    }
 
-   public ArrayList<Circle> getAllAvailableLanes()
+   public ArrayList<Lane> getAllAvailableLanes()
    {
       return LaneFactory.getLanes(elementsInTrack);
    }
@@ -66,5 +68,15 @@ public class Carriageway
       trackPane.getChildren().add(lane.getAsphalt());
       trackPane.getChildren().add(lane.getOuterRoadMarks());
       trackPane.getChildren().add(lane.getInnerRoadMarks());
+   }
+
+   public void generateVehicle(Vehicle v)
+   {
+     
+      Thread t = new Thread(v);
+      t.start();
+      ArrayList<Lane> lanes = getAllAvailableLanes();
+      lanes.get(0).addObserver(v);
+      
    }
 }

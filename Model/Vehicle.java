@@ -1,10 +1,13 @@
 package model;
 
+import javafx.animation.Animation.Status;
 import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -17,69 +20,153 @@ public class Vehicle implements Observer, Runnable
    private final double height = 15;
    private Color fill = Color.GREENYELLOW;
    private Rectangle vehicle;
-
-   private PathTransition transition = new PathTransition();
-   private Circle path;
    
-   @FXML
-   StackPane trackPane;
 
-   @FXML
-   Circle baseCarriageway;
+   private PathTransition transition;
+   
+   
+//
+//   @FXML
+//   Circle baseCarriageway;
    
    private Bounds blockingBounds;
+   private Bounds vehicleBounds;
+   private boolean accidentOnTheRoad;
+   private Circle blockingObject;
    
-   public Vehicle()
+   public Vehicle(StackPane trackPane, Circle baseCarriageway, Circle blockingObject)
    {
+      accidentOnTheRoad = false;
+      this.blockingObject = blockingObject;
       vehicle = new Rectangle(width, height, fill);
       StackPane.setMargin(vehicle,new Insets(15, 0, 0, 30));
-      setupVehicle();
+      trackPane.getChildren().add(vehicle);
+      vehicle.toFront();
+      setupVehicle(vehicle, baseCarriageway);
+      
    }
    
    @Override
    public void run()
    {
       // This will keep the vehicle always moving or wanting to move
-      while(true)                      
-      {
-         startVehicle();
+      startVehicle();
+      while(true) {
          
-         while(!checkCollisionBetweenBlockingElementAndVehicle())
+         while(!accidentOnTheRoad)
          {
-            // do nothing
+            // always check for collision against the front vehicle
+            if(isVehicleStopped())
+            {
+               startVehicle();
+            }
+            
          }
-         // collision detected coming out of the while loop
+         // when there is an accident on the road, calculate the distance and if the distance is less than the specified then it should pause.
+         double distance = calculateDistanceBetweenAccidentAndVehicle();
+         System.out.println(distance);
+         if(distance < 2.0)
+         {
+            stopVehicle();
+         }
          
-         stopVehicle();
-         while(checkCollisionBetweenBlockingElementAndVehicle())
-         {
-            // do nothing
-            // maybe later here see if the car can change lane.
-         }
+         // look on the other lane to see if it can move.
+         
+         
       }
+//      while(true)                      
+//      {
+//         
+//         while(!checkCollisionBetweenBlockingElementAndVehicle() && !checkCollisionBetweenVehicles())
+//         {
+//            // do nothing
+//         }
+//         // collision detected coming out of the while loop
+//         // check side collision with rectangle/vehicle, in the y axis for side vehicle
+//         checkCollisionBetweenVehicles(); // for the sides, also need to verify if it has lanes on the side
+//         stopVehicle();
+//         
+//         
+//         while(checkCollisionBetweenBlockingElementAndVehicle())
+//         {
+//            // check shape collision with rectangle/vehicle type
+//            // do nothing
+//            // maybe later here see if the car can change lane.
+//         }
+//      }
+      
+//      while(true)
+//      {
+//         startVehicle();
+//         if(!isFrontBlockDetected()) {
+//            // Need to have this being detect
+//            return;
+//         }
+//         else if(isLaneOnRight) {
+//            if(!isRightSideBlockDetected()) {
+//               
+//            }
+//         }
+//      }
+   }
+
+   private double calculateDistanceBetweenAccidentAndVehicle()
+   {
+//      Point2D v = new Point2D(vehicle.getX(), vehicle.getY());
+//      Point2D be = new Point2D(blockingObject.getCenterX(), blockingObject.getCenterY());
+//      v.distan
+      
+      double vX = getGlobalX(vehicle);
+      double vY = getGlobalY(vehicle);
+      double bX = getGlobalX(blockingObject);
+      double bY = getGlobalY(blockingObject);
+      
+      Point2D v = new Point2D(vX, vY);
+      Point2D b = new Point2D(bX, bY);
+      
+      return v.distance(b);
+      
    }
    
-   public void setupVehicle()
+   private double getGlobalX(Node node) {
+      if (node == null) {
+          return 0.0;
+      }
+      double parentGlobalX = getGlobalX(node.getParent());
+      return node.getLayoutX() - parentGlobalX;
+  }
+
+  private double getGlobalY(Node node) {
+      if (node == null) {
+          return 0.0;
+      }
+      double parentGlobalY = getGlobalY(node.getParent());
+      return parentGlobalY - node.getLayoutY();
+  }
+
+   public void setupVehicle(Rectangle vehicle, Circle baseCarriageway)
    {
-      transition.setNode(this.vehicle);
+      transition = new PathTransition();
+      transition.setNode(vehicle);
       transition.setDuration(Duration.seconds(5));
       transition.setPath(baseCarriageway);
       transition.setInterpolator(Interpolator.LINEAR);
       transition.setOrientation(
             PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
       transition.setCycleCount(PathTransition.INDEFINITE);
+      
    }
    
    @Override
-   public void update(Bounds b)
+   public void update(boolean collisionDetected)
    {
-      blockingBounds = b;
+      accidentOnTheRoad = collisionDetected;
       
    }
    
    private boolean checkCollisionBetweenBlockingElementAndVehicle()
    {
-
+      
 //      boolean collisionDetected = false;
 //      for (Shape static_bloc : nodes)
 //      {
@@ -93,17 +180,18 @@ public class Vehicle implements Observer, Runnable
 //            }
 //         }
 //      }
-      if (vehicle.getBoundsInParent().intersects(blockingBounds))
+      if (this.vehicle.getBoundsInParent().intersects(vehicleBounds))
       {
-         vehicle.setFill(Color.YELLOW);
+         this.vehicle.setFill(Color.YELLOW);
          return true;
       }
       else
       {
-         vehicle.setFill(Color.RED);
+         this.vehicle.setFill(Color.RED);
          return false;
       }
    }
+ 
    
    private void startVehicle()
    {
@@ -113,5 +201,10 @@ public class Vehicle implements Observer, Runnable
    private void stopVehicle()
    {
       transition.pause();
+   }
+   
+   private boolean isVehicleStopped()
+   {
+      return transition.getStatus() == Status.PAUSED;
    }
 }

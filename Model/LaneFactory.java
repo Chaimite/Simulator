@@ -20,18 +20,23 @@ public class LaneFactory
       return lane;
    }
 
-   public static ArrayList<Circle> getLanes(int availableNumber)
+   public static ArrayList<Lane> getLanes(int availableNumber)
    {
       Iterator<Lane> lanes = LaneFactory.lanes.values().iterator();
-      ArrayList<Circle> availableLanes = new ArrayList<>();
+      ArrayList<Lane> availableLanes = new ArrayList<>();
 
-      for (int i = 1; i < availableNumber; i++)
+      for (int i = 0; i < availableNumber; i++)
       {
          if (lanes.hasNext())
          {
-            availableLanes.add(lanes.next().getAsphalt());
+            availableLanes.add(lanes.next());
          }
       }
       return availableLanes;
+   }
+   
+   public static void addBaseLane(Circle asphalt)
+   {
+      lanes.put(asphalt.getRadius(), new Lane(asphalt));
    }
 }

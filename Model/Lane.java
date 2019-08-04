@@ -16,7 +16,7 @@ public class Lane implements Observable
    private final Color circleInsideColor = Color.TRANSPARENT;
    private LinkedList<Vehicle> vehicles = new LinkedList<>();
    private Bounds blockingBounds;
-   
+
    public Lane(double radius)
    {
       // The asphalt part
@@ -33,6 +33,11 @@ public class Lane implements Observable
       // The outer road marks
       outerRoadMarks = new Circle(radius + laneSize - 12, circleInsideColor);
       outerRoadMarks.setStroke(roadMarksColor);
+   }
+   
+   public Lane(Circle asphalt)
+   {
+      this.asphalt = asphalt;
    }
 
    public Circle getAsphalt()
@@ -65,34 +70,30 @@ public class Lane implements Observable
       this.outerRoadMarks = outerRoadMarks;
    }
    
-   public void collisionDetected(Bounds b)
-   {
-      blockingBounds = b;
-      notifyObservers();
-   }
-
    @Override
-   public void notifyObservers()
+   public void notifyObservers(boolean collisionDetected)
    {
       for (Vehicle vehicle : vehicles)
       {
-         vehicle.update(blockingBounds);
+         vehicle.update(collisionDetected);
       }
-      
    }
 
    @Override
    public void addObserver(Vehicle vehicle)
    {
       vehicles.add(vehicle);
-      
    }
 
    @Override
    public void removeObserver(Vehicle vehicle)
    {
       vehicles.remove(vehicle);
-      
    }
 
+   public void collisionDetected(boolean collisionDetected)
+   {
+      notifyObservers(collisionDetected);
+      
+   }
 }
