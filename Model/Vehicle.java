@@ -115,14 +115,16 @@ public class Vehicle implements Observer, Runnable
 //      Point2D v = new Point2D(vehicle.getX(), vehicle.getY());
 //      Point2D be = new Point2D(blockingObject.getCenterX(), blockingObject.getCenterY());
 //      v.distan
-      
+      Bounds boundsInV = vehicle.localToScene(vehicle.getBoundsInLocal());
+      Point2D ff = vehicle.localToScene(vehicle.getX(), vehicle.getY());
       double vX = getGlobalX(vehicle);
       double vY = getGlobalY(vehicle);
       double bX = getGlobalX(blockingObject);
       double bY = getGlobalY(blockingObject);
       
-      Point2D v = new Point2D(vX, vY);
-      Point2D b = new Point2D(bX, bY);
+      Point2D v = new Point2D(ff.getX(), ff.getX());
+      System.out.println("vehicle x " + ff.getX() + " vehicle y " + ff.getY());
+      Point2D b = new Point2D(blockingObject.getCenterX(), blockingObject.getCenterY());
       
       return v.distance(b);
       
