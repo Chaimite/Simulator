@@ -45,7 +45,7 @@ public class Vehicle implements Observer, Runnable
       accidentOnTheRoad = false;
       this.blockingObject = blockingObject;
       vehicle = new Rectangle(width, height, fill);
-      StackPane.setMargin(vehicle, new Insets(15, 0, 0, 30));
+//      StackPane.setMargin(vehicle, new Insets(15, 0, 0, 30));
 //      trackPane.getChildren().add(vehicle);
       this.trackPane = trackPane;
       setupVehicle(vehicle, baseLane.getAsphalt());

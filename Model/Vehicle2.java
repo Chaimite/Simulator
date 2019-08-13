@@ -1,20 +1,26 @@
 package model;
 
+import java.util.Optional;
+
 import javafx.animation.AnimationTimer;
+import javafx.animation.RotateTransition;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
 
 public class Vehicle2 extends AnimationTimer
 {
 
    private double xMotion;
    private double yMotion;
-   private double speed = 20;
+   private double speed = Math.PI/100;
    private Lane lane;
    private double radius;
-   private double angle = 10;
+   private double angle = 1.57;
 
    private final Rectangle vehicle;
    private Carriageway carriageway;
@@ -22,45 +28,39 @@ public class Vehicle2 extends AnimationTimer
    private double vehicleLane;
    private long lastTimerCall = System.nanoTime();
    private final long One_Sec = 10000000;
+   private final double probeSize = 1;
+   private boolean flag;
+   private double x,y;
+   Optional<Node> result = null;
+   Circle probe;
+   private double rotationAngle;
    
    
    public Vehicle2(double speed, Lane lane, Carriageway carriageway, Pane vehiclePane)
    {
       super();
       this.speed = speed;
+      rotationAngle = 2;
       vehicle = new Rectangle(30, 15, Color.RED);
+      probe = new Circle( 10, Color.TRANSPARENT);
+//      vehiclePane.getChildren().add(probe);
       this.lane = lane;
       this.carriageway = carriageway;
       this.vehiclePane = vehiclePane;
-      vehiclePane.getChildren().add(vehicle);
+      vehiclePane.getChildren().addAll(vehicle,probe);
       vehicleLane = lane.getAsphalt().getRadius();
 //      Circle baseCircle = lane.getAsphalt();
       
       
-      double x = ((vehiclePane.getBoundsInParent().getMaxX() + vehiclePane.getBoundsInParent().getMinX()) / 4.0)  ;
+      double x = (vehiclePane.getBoundsInParent().getMaxX() + vehiclePane.getBoundsInParent().getMinX()) / 4.0  ;
       double y = (vehiclePane.getBoundsInParent().getMaxY() + vehiclePane.getBoundsInParent().getMinY()) / 4.0 ;
      
       vehicle.setLayoutX(x); 
       vehicle.setLayoutY(y); 
+      
+      probe.setLayoutX(x - 2);
+      probe.setLayoutY(y - 2);
    }
-
-//   @Override
-//   public void run()
-//   {
-//      AnimationTimer timer = new AnimationTimer()
-//      {         
-//         @Override
-//         public void handle(long now)
-//         {
-//            vehicleLane = lane.getAsphalt().getRadius();
-//            moveInCircle(vehicleLane);
-//            
-//
-//         }
-//      };
-//      timer.start();
-//      
-//   }
 
    
    public double getX()
@@ -108,15 +108,35 @@ public class Vehicle2 extends AnimationTimer
       // point A
       System.out.println(getX());
       System.out.println(getY());
-      double newX = getX() + (radius * Math.cos(Math.toDegrees(angle)));
-      double newY = getY() + (radius * Math.sin(Math.toDegrees(angle)));
-      System.out.println(newX);
-      System.out.println(newY);
-      System.out.println("####################");
-      double factor = Math.tan(newX/newY);
-      vehicle.setTranslateX(newX*factor);
-      vehicle.setTranslateY(newY*factor);
       
+      double newX = lane.getAsphalt().getCenterX() + (radius * Math.cos(angle));
+      double newY = lane.getAsphalt().getCenterY() + (radius * Math.sin(angle));
+      
+      System.out.println("new x value " + newX);
+      System.out.println("new y value " + newY);
+      System.out.println("####################");
+//      Duration duration = Duration.seconds(5);
+//      Rotate rotate = new RotateTransition(duration, node)
+//      
+//      vehicle.getTransforms().add(rotate);
+      vehicle.setTranslateX(newX);
+      vehicle.setTranslateY(newY);
+   }
+   private boolean isFrontBlocked(double radius)
+   {     
+      
+      double probeFrontLocationX = (lane.getAsphalt().getCenterX() + probeSize) + (radius * Math.cos(angle));
+      double probeFrontLocationY = (lane.getAsphalt().getCenterY() + probeSize) + (radius * Math.sin(angle));
+      
+      probe.setTranslateX(probeFrontLocationX);
+      probe.setTranslateY(probeFrontLocationY);
+      
+      System.out.println("probe x " +  probeFrontLocationX);
+      System.out.println("probe y " +  probeFrontLocationY);
+//  
+      result = vehiclePane.getChildren().stream().filter(n -> n.getLayoutX() == probeFrontLocationX && n.getLayoutY() == probeFrontLocationY)
+            .findAny();
+      return flag = (result != null) ? true : false;
    }
 
    public void moveInFront()
@@ -168,13 +188,16 @@ public class Vehicle2 extends AnimationTimer
    {  
       if(now > lastTimerCall + One_Sec)
       {
+         
+         isFrontBlocked(vehicleLane);
          moveInCircle(vehicleLane);
          System.out.println(now);
          System.out.println((now / 1000000000.0));
          System.out.println(((now / 1000000000.0) / 10000000.0));
          System.out.println("--------------------------");
-         angle += 0.0001;
+         angle += 0.01;
          lastTimerCall = now;
+         
       }
    }
 }
