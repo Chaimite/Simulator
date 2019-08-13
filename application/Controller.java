@@ -3,7 +3,6 @@ package application;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import javafx.animation.PathTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
@@ -14,19 +13,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import model.BlockingElement;
 import model.Carriageway;
 import model.Lane;
-import model.LaneFactory;
-import model.Vehicle;
 
 public class Controller implements Initializable
 {
-//   @FXML
-//   private Rectangle vehicle;
-
    @FXML
    private Circle baseCarriageway;
 
@@ -40,7 +33,7 @@ public class Controller implements Initializable
    private StackPane trackPane;
 
    @FXML
-   private Pane vehicleStackPane;
+   private Pane vehiclePane;
 
    @FXML
    private Circle blockObject;
@@ -56,7 +49,6 @@ public class Controller implements Initializable
    private boolean isMoving = true;
    private ArrayList<Lane> availableLanes;
    
-//   private Vehicle vehicle = new Vehicle(); 
    
    private BlockingElement be = new BlockingElement();
    
@@ -66,10 +58,10 @@ public class Controller implements Initializable
    public void initialize(URL location, ResourceBundle resources)
    {  
       
-      track = new Carriageway(trackPane, baseCarriageway);
+      track = new Carriageway(trackPane, baseCarriageway, blockObject, vehiclePane);
 
       // Makes the vehicle stack pane transparent
-      vehicleStackPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0);");
+      vehiclePane.setStyle("-fx-background-color: rgba(255, 255, 255, 0);");
       
       // Get coordinates of block object
       setMouseOnPressed();
@@ -78,8 +70,8 @@ public class Controller implements Initializable
       setMouseOnDragged();
       
       setOnMouseReleased();
-      Vehicle v = new Vehicle(trackPane, baseCarriageway, blockObject);
-      track.generateVehicle(v);
+      
+      track.generateVehicle();
       
       // Action taken when object is released
 //      nodes = new ArrayList<>();
@@ -99,7 +91,6 @@ public class Controller implements Initializable
          r.toFront();
          availableLanes = track.getAllAvailableLanes();
          
-//         availableLanes.add(baseCarriageway);       
       });
    }
    public void setOnMouseReleased() {

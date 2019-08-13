@@ -1,24 +1,13 @@
 package test;
 
-import javafx.animation.Animation;
 import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.PathTransition;
-import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -32,11 +21,7 @@ public class CircleTransitions extends Application {
         stage.setScene(scene);
         stage.setTitle("Circles");
         stage.show();
-        
-        
-        
-         
-        
+      
         //Setting title to the Stage 
         stage.setTitle("Path transition example"); 
         Circle circle = new Circle(150, 150, 100, Color.YELLOW);

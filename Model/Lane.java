@@ -16,6 +16,8 @@ public class Lane implements Observable
    private final Color circleInsideColor = Color.TRANSPARENT;
    private LinkedList<Vehicle> vehicles = new LinkedList<>();
    private Bounds blockingBounds;
+   private Lane rightLane;
+   private Lane leftLane;
 
    public Lane(double radius)
    {
@@ -95,5 +97,25 @@ public class Lane implements Observable
    {
       notifyObservers(collisionDetected);
       
+   }
+   
+   public Lane getRightLane()
+   {
+      return rightLane;
+   }
+   
+   public Lane getLeftLane()
+   {
+      return leftLane;
+   }
+   
+   public void setRightLane(Lane rightLane)
+   {
+      this.rightLane = rightLane;
+   }
+   
+   public void setLeftLane(Lane leftLane)
+   {
+      this.leftLane = leftLane;
    }
 }

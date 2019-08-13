@@ -17,7 +17,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class PathTransitionExample extends Application {
+public class PathTranExample extends Application {
 
    PathTransition transition;
 

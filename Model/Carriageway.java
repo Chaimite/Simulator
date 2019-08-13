@@ -1,6 +1,8 @@
 package model;
 
 import java.util.ArrayList;
+
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 
@@ -11,16 +13,22 @@ public class Carriageway
    private final int minElementsOnTrack = 1;
 
    private StackPane trackPane;
+   private Pane vehiclePane;
    private double radius;
    private int elementsInTrack;
+   private Lane baseLane;
+   private Circle blockingObject;
    
 
-   public Carriageway(StackPane trackPane, Circle asphalt)
+   public Carriageway(StackPane trackPane, Circle asphalt, Circle blockingObject, Pane vehiclePane)
    {
-      LaneFactory.addBaseLane(asphalt);
+      this.blockingObject = blockingObject;
+      baseLane = LaneFactory.generateLanes(asphalt);
       this.radius = asphalt.getRadius();
       this.trackPane = trackPane;
       elementsInTrack = 1;
+      this.vehiclePane = vehiclePane;
+      
    }
 
    public ArrayList<Lane> getAllAvailableLanes()
@@ -70,13 +78,19 @@ public class Carriageway
       trackPane.getChildren().add(lane.getInnerRoadMarks());
    }
 
-   public void generateVehicle(Vehicle v)
+   public void generateVehicle()
    {
-     
-      Thread t = new Thread(v);
-      t.start();
-      ArrayList<Lane> lanes = getAllAvailableLanes();
-      lanes.get(0).addObserver(v);
+//      Vehicle v = new Vehicle(trackPane, baseLane, blockingObject, vehiclePane);
+//      Thread t = new Thread(v);
+//      t.start();
+//      ArrayList<Lane> lanes = getAllAvailableLanes();
+//      lanes.get(0).addObserver(v);
+      
+      Vehicle2 v = new Vehicle2(1.0,baseLane,this,vehiclePane);
+//      Thread t = new Thread(v);
+//      t.start();
+      v.start();
+      
       
    }
 }

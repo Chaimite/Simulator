@@ -40,12 +40,12 @@
          <children>
             <StackPane fx:id="trackPane" alignment="CENTER" pickOnBounds="false" prefHeight="798.0" prefWidth="692.0">
                <children>
-                  <Circle fx:id="baseCarriageway" fill="#ffffff00" radius="100.0" stroke="LIGHTGRAY" strokeWidth="25.0" StackPane.alignment="CENTER" />
                   <Circle fill="#f5f6f700" radius="115.0" stroke="#ffffff00" strokeType="INSIDE" strokeWidth="2.0" StackPane.alignment="CENTER" />
                   <Circle fill="#ffffff00" radius="87.0" stroke="BLACK" strokeType="INSIDE" StackPane.alignment="CENTER" />
+                  <Circle fx:id="baseCarriageway" fill="#ffffff00" radius="100.0" stroke="LIGHTGRAY" strokeWidth="25.0" StackPane.alignment="CENTER" />
                </children>
             </StackPane>
-            <Pane fx:id="vehicleStackPane" layoutX="216.0" layoutY="268.0" pickOnBounds="false" prefHeight="254.0" prefWidth="255.0" />
+            <Pane fx:id="vehiclePane" layoutX="216.0" layoutY="268.0" pickOnBounds="false" prefHeight="254.0" prefWidth="255.0" />
             <Circle fx:id="blockObject" fill="#ff1f1f" layoutX="667.0" layoutY="23.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
          </children>
       </AnchorPane>
