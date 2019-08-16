@@ -97,6 +97,8 @@ public class Controller implements Initializable
       blockObject.setOnMouseReleased((t) ->{
          be.setCenterX(blockObject.getCenterX());
          be.setCenterY(blockObject.getCenterY());
+         
+//         vehiclePane.getChildren().add(blockObject);
          checkBounds();
       });
    }
@@ -141,10 +143,12 @@ public class Controller implements Initializable
              collisionDetected = true;
              collisionCircle = lane;
              lane.collisionDetected(true);
+             lane.setBlockingObject(blockObject);
           }
           else
           {
              lane.collisionDetected(false);
+             lane.setBlockingObject(null);
           }
       }
 

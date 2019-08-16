@@ -18,6 +18,7 @@ public class Lane implements Observable
    private Bounds blockingBounds;
    private Lane rightLane;
    private Lane leftLane;
+   private Circle blockObject;
 
    public Lane(double radius)
    {
@@ -117,5 +118,16 @@ public class Lane implements Observable
    public void setLeftLane(Lane leftLane)
    {
       this.leftLane = leftLane;
+   }
+
+   public void setBlockingObject(Circle blockObject)
+   {
+      this.blockObject = blockObject;
+      
+   }
+   
+   public Circle getBlockingObject()
+   {
+      return blockObject;
    }
 }

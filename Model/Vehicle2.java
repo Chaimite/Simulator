@@ -1,39 +1,31 @@
 package model;
 
-import java.util.Optional;
 
 import javafx.animation.AnimationTimer;
-import javafx.animation.RotateTransition;
-import javafx.scene.Node;
+import javafx.geometry.Bounds;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Rotate;
-import javafx.util.Duration;
-
 public class Vehicle2 extends AnimationTimer
 {
 
-   private double xMotion;
-   private double yMotion;
    private double speed = Math.PI/100;
    private Lane lane;
    private double radius;
    private double angle = 1.57;
 
-   private final Rectangle vehicle;
+   private final Circle vehicle;
    private Carriageway carriageway;
+   private double rotationAngle;
    private Pane vehiclePane;
    private double vehicleLane;
    private long lastTimerCall = System.nanoTime();
    private final long One_Sec = 10000000;
-   private final double probeSize = 1;
-   private boolean flag;
-   private double x,y;
-   Optional<Node> result = null;
-   Circle probe;
-   private double rotationAngle;
+   private boolean collision;
+   Circle frontSensor;
+   Circle rightSensor;
+   Circle leftSensor;
    
    
    public Vehicle2(double speed, Lane lane, Carriageway carriageway, Pane vehiclePane)
@@ -41,46 +33,42 @@ public class Vehicle2 extends AnimationTimer
       super();
       this.speed = speed;
       rotationAngle = 2;
-      vehicle = new Rectangle(30, 15, Color.RED);
-      probe = new Circle( 10, Color.TRANSPARENT);
-//      vehiclePane.getChildren().add(probe);
+      vehicle = new Circle(10, Color.RED);
+      frontSensor = new Circle( 10, Color.BLUE);
       this.lane = lane;
       this.carriageway = carriageway;
       this.vehiclePane = vehiclePane;
-      vehiclePane.getChildren().addAll(vehicle,probe);
-      vehicleLane = lane.getAsphalt().getRadius();
-//      Circle baseCircle = lane.getAsphalt();
-      
-      
-      double x = (vehiclePane.getBoundsInParent().getMaxX() + vehiclePane.getBoundsInParent().getMinX()) / 4.0  ;
-      double y = (vehiclePane.getBoundsInParent().getMaxY() + vehiclePane.getBoundsInParent().getMinY()) / 4.0 ;
+      vehiclePane.getChildren().addAll(vehicle,frontSensor);
+      vehicleLane = lane.getAsphalt().getRadius();    
+      double x = ((vehiclePane.getBoundsInParent().getMaxX() + vehiclePane.getBoundsInParent().getMinX()) / 4.0  ) + 22;
+      double y = ((vehiclePane.getBoundsInParent().getMaxY() + vehiclePane.getBoundsInParent().getMinY()) / 4.0 ) - 2.5 ;
      
       vehicle.setLayoutX(x); 
       vehicle.setLayoutY(y); 
       
-      probe.setLayoutX(x - 2);
-      probe.setLayoutY(y - 2);
+      frontSensor.setLayoutX(x);
+      frontSensor.setLayoutY(y);      
+      
    }
-
    
    public double getX()
    {
-      return vehicle.getX();
+      return vehicle.getCenterX();
    }
 
    public void setX(double x)
    {
-      vehicle.setX(x);
+      vehicle.setCenterX(x);
    }
 
    public double getY()
    {
-      return vehicle.getY();
+      return vehicle.getCenterY();
    }
 
    public void setY(double y)
    {
-      vehicle.setY(y);
+      vehicle.setCenterY(y);
    }
 
    public double getSpeed()
@@ -105,40 +93,67 @@ public class Vehicle2 extends AnimationTimer
 
    public void moveInCircle(double radius)
    {
-      // point A
-      System.out.println(getX());
-      System.out.println(getY());
-      
       double newX = lane.getAsphalt().getCenterX() + (radius * Math.cos(angle));
       double newY = lane.getAsphalt().getCenterY() + (radius * Math.sin(angle));
-      
-      System.out.println("new x value " + newX);
-      System.out.println("new y value " + newY);
-      System.out.println("####################");
-//      Duration duration = Duration.seconds(5);
-//      Rotate rotate = new RotateTransition(duration, node)
-//      
-//      vehicle.getTransforms().add(rotate);
+
       vehicle.setTranslateX(newX);
       vehicle.setTranslateY(newY);
-   }
-   private boolean isFrontBlocked(double radius)
-   {     
       
-      double probeFrontLocationX = (lane.getAsphalt().getCenterX() + probeSize) + (radius * Math.cos(angle));
-      double probeFrontLocationY = (lane.getAsphalt().getCenterY() + probeSize) + (radius * Math.sin(angle));
-      
-      probe.setTranslateX(probeFrontLocationX);
-      probe.setTranslateY(probeFrontLocationY);
-      
-      System.out.println("probe x " +  probeFrontLocationX);
-      System.out.println("probe y " +  probeFrontLocationY);
-//  
-      result = vehiclePane.getChildren().stream().filter(n -> n.getLayoutX() == probeFrontLocationX && n.getLayoutY() == probeFrontLocationY)
-            .findAny();
-      return flag = (result != null) ? true : false;
+      frontSensor(radius);
+
    }
 
+   public void frontSensor(double radius)
+   {
+      double frontSensorLocationX = lane.getAsphalt().getCenterX() + (radius * Math.cos(angle + 0.08));
+      double frontSensorLocationY = lane.getAsphalt().getCenterY() + (radius * Math.sin(angle + 0.08));
+
+      frontSensor.setTranslateX(frontSensorLocationX);
+      frontSensor.setTranslateY(frontSensorLocationY);
+   }
+   // needs to look to the next right lane
+   public void rightSensor(double radius) {
+      double rightSensorLocationX = lane.getAsphalt().getCenterX() + (radius * Math.cos(angle));
+      double rightSensorLocationY = lane.getAsphalt().getCenterY() + (radius * Math.sin(angle));
+
+      rightSensor.setTranslateX(rightSensorLocationX);
+      rightSensor.setTranslateY(rightSensorLocationY);
+   }
+   // needs to look to the next left lane and 
+   public void leftSensor(double radius) {
+      double leftSensorLocationX = lane.getAsphalt().getCenterX() + (radius * Math.cos(angle));
+      double leftSensorLocationY = lane.getAsphalt().getCenterY() + (radius * Math.sin(angle));
+
+      leftSensor.setTranslateX(leftSensorLocationX);
+      leftSensor.setTranslateY(leftSensorLocationY);
+   }
+   
+   private boolean isFrontBlocked()
+   {           
+      collision = false;
+      collision = (vehiclePane.getChildren().stream().filter(n -> n != vehicle && n != frontSensor && n.getLayoutX() == frontSensor.getLayoutX() && n.getLayoutY() == frontSensor.getLayoutY())
+            .findAny()) == null ? true: false;
+      Circle block = lane.getBlockingObject();
+      if(block != null)
+      {
+         Bounds blockBounds = block.localToScreen(block.getBoundsInLocal());
+
+         if(frontSensor.localToScreen(frontSensor.getBoundsInLocal()).intersects(blockBounds))
+         {
+            collision = true;                     
+         }         
+      }      
+      return collision;
+   }
+   
+   
+   private boolean isRightSideBlocked() {
+      return false;
+       }
+
+   private boolean isLeftSideBlocked() {
+      return false;
+       }
    public void moveInFront()
    {
       setY(getY() + 20);
@@ -155,12 +170,10 @@ public class Vehicle2 extends AnimationTimer
    {
       setX(getX() - 20);
    }
-
-   public void rotate(double angle)
+   // Used for a vehicle to rotate on it's centre
+   public void rotateLeft(double angle)
    {
-      // This is being annoying
-      // Maybe this works
-      vehicle.rotateProperty().add(angle);
+//      vehicle.getTransforms().add(new Rotate(angle, vehicle.getBoundsInParent().getMinX(), pivotY));
    }
 
    public double getRadius()
@@ -182,21 +195,39 @@ public class Vehicle2 extends AnimationTimer
    {
       this.lane = lane;
    }
-
+   
    @Override
    public void handle(long now)
    {  
       if(now > lastTimerCall + One_Sec)
       {
          
-         isFrontBlocked(vehicleLane);
-         moveInCircle(vehicleLane);
-         System.out.println(now);
-         System.out.println((now / 1000000000.0));
-         System.out.println(((now / 1000000000.0) / 10000000.0));
-         System.out.println("--------------------------");
-         angle += 0.01;
-         lastTimerCall = now;
+         if(!isFrontBlocked()) {
+            moveInCircle(vehicleLane);
+            angle += 0.01;
+            lastTimerCall = now;
+         }
+         else if(isFrontBlocked()) {
+            // go left
+            if(!isLeftSideBlocked()) {
+               // translate to left
+               // break and start loop again
+               // I am assuming it will be able to resume
+               // if not copy the coordinates and
+               // use those to begin the loop again
+            }
+            else if(!isRightSideBlocked()) {
+               
+            }
+            
+            
+         }
+         else
+         {
+            // stop vehicle
+            this.stop();
+            
+         }
          
       }
    }
