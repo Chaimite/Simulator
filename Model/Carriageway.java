@@ -18,12 +18,20 @@ public class Carriageway
    private int elementsInTrack;
    private Lane baseLane;
    private Circle blockingObject;
+   private Lane ghostLane;
+   private Lane currentLane;
    
 
    public Carriageway(StackPane trackPane, Circle asphalt, Circle blockingObject, Pane vehiclePane)
    {
       this.blockingObject = blockingObject;
       baseLane = LaneFactory.generateLanes(asphalt);
+      currentLane = baseLane;
+      ghostLane = baseLane.getRightLane();
+      
+      ghostLane.setLeftLane(null);
+      currentLane.setRightLane(null);
+      
       this.radius = asphalt.getRadius();
       this.trackPane = trackPane;
       elementsInTrack = 1;
@@ -38,7 +46,7 @@ public class Carriageway
 
    public void addLane()
    {
-      if (!(elementsInTrack <= maxElementsOnTrack))
+      if (!(elementsInTrack < maxElementsOnTrack))
       {
          return;
       }
@@ -48,7 +56,48 @@ public class Carriageway
       Lane lane = LaneFactory.getLane(radius);
       // add the lane to the stack
       addLaneToStack(lane);
+      
+      currentLane.setRightLane(ghostLane);
+      if(ghostLane != null) {        
+         ghostLane.setLeftLane(currentLane);
+      }
+      
+      currentLane = currentLane.getRightLane();
+      ghostLane = ghostLane.getRightLane();
+      
+      currentLane.setRightLane(null);
+      if(ghostLane != null)
+      {
+         ghostLane.setLeftLane(null);         
+      }
+      
       elementsInTrack++;
+   }
+   
+   private void handleLaneConnection()
+   {
+      Lane currentLane = baseLane;
+      while(currentLane.getRightLane() != null)
+      {
+         currentLane = currentLane.getRightLane();
+      }
+      
+      for (int i = 0; i < elementsInTrack; i++)
+      {
+         
+      }
+      
+      currentLane.setRightLane(ghostLane);
+      ghostLane.setLeftLane(currentLane);
+      
+      currentLane = currentLane.getRightLane();
+      ghostLane = ghostLane.getRightLane();
+      
+      currentLane.setRightLane(null);
+      ghostLane.setLeftLane(null);
+      
+      
+      
    }
 
    public void removeLane()
@@ -59,6 +108,28 @@ public class Carriageway
          removeLaneFromStack(lane);
          radius = radius - laneSize;
          elementsInTrack--;
+         
+         currentLane.setRightLane(ghostLane);
+         if(ghostLane != null)
+         {
+            ghostLane.setLeftLane(currentLane);            
+         }
+         
+         if(ghostLane == null)
+         {
+            ghostLane = currentLane;
+         }
+         else
+         {
+            ghostLane = ghostLane.getLeftLane();                        
+         }
+         currentLane = currentLane.getLeftLane();
+         
+        
+         
+         currentLane.setRightLane(null);
+         ghostLane.setLeftLane(null);
+         
       }
    }
 

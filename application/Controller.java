@@ -111,25 +111,6 @@ public class Controller implements Initializable
       });
    }
      
-   
-//   private void checkCollisionBetweenBlockingElementAndVehicle(Shape block) {
-//      boolean collisionDetected = false;
-//      for(Shape static_bloc : nodes) {
-//         if(static_bloc != block) {
-//
-//            Shape intersect = Shape.intersect(vehicle, blockObject);
-//            if (intersect.getBoundsInParent().getWidth() != -1) {
-//               collisionDetected = true;
-//            }
-//         }
-//      }
-//      if(collisionDetected) {
-//        vehicle.setFill(Color.YELLOW);
-//      }
-//      else {
-//         vehicle.setFill(Color.RED);
-//      }
-//   }
    // Checks if the blocking object and the lane are colliding
    private void checkBounds()
    {

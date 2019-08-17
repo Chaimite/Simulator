@@ -46,7 +46,7 @@
                </children>
             </StackPane>
             <Pane fx:id="vehiclePane" layoutX="216.0" layoutY="268.0" pickOnBounds="false" prefHeight="254.0" prefWidth="255.0" />
-            <Circle fx:id="blockObject" fill="#ff1f1f" layoutX="667.0" layoutY="23.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fx:id="blockObject" fill="#ff1f1f" layoutX="667.0" layoutY="23.0" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
          </children>
       </AnchorPane>
   </items>
