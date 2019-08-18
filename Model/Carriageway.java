@@ -1,6 +1,5 @@
 package model;
 
-import java.util.ArrayList;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -8,40 +7,28 @@ import javafx.scene.shape.Circle;
 
 public class Carriageway
 {
-   private final double laneSize = 25;
    private final int maxElementsOnTrack = 5;
    private final int minElementsOnTrack = 1;
 
    private StackPane trackPane;
-   private Pane vehiclePane;
-   private double radius;
    private int elementsInTrack;
    private Lane baseLane;
-   private Circle blockingObject;
    private Lane ghostLane;
    private Lane currentLane;
-   
 
-   public Carriageway(StackPane trackPane, Circle asphalt, Circle blockingObject, Pane vehiclePane)
+   public Carriageway(StackPane trackPane, Circle asphalt, Pane vehiclePane)
    {
-      this.blockingObject = blockingObject;
-      baseLane = LaneFactory.generateLanes(asphalt);
+      baseLane = LaneFactory.generateLanes(asphalt, vehiclePane);
+      baseLane.setIsActive(true);
       currentLane = baseLane;
       ghostLane = baseLane.getRightLane();
       
       ghostLane.setLeftLane(null);
       currentLane.setRightLane(null);
       
-      this.radius = asphalt.getRadius();
       this.trackPane = trackPane;
       elementsInTrack = 1;
-      this.vehiclePane = vehiclePane;
       
-   }
-
-   public ArrayList<Lane> getAllAvailableLanes()
-   {
-      return LaneFactory.getLanes(elementsInTrack);
    }
 
    public void addLane()
@@ -50,12 +37,8 @@ public class Carriageway
       {
          return;
       }
-      // calculates radius for next lane
-      radius = radius + laneSize;
-      // get the lane from LaneFactory
-      Lane lane = LaneFactory.getLane(radius);
-      // add the lane to the stack
-      addLaneToStack(lane);
+      addLaneToStack(ghostLane);
+      ghostLane.setIsActive(true);
       
       currentLane.setRightLane(ghostLane);
       if(ghostLane != null) {        
@@ -73,40 +56,13 @@ public class Carriageway
       
       elementsInTrack++;
    }
-   
-   private void handleLaneConnection()
-   {
-      Lane currentLane = baseLane;
-      while(currentLane.getRightLane() != null)
-      {
-         currentLane = currentLane.getRightLane();
-      }
-      
-      for (int i = 0; i < elementsInTrack; i++)
-      {
-         
-      }
-      
-      currentLane.setRightLane(ghostLane);
-      ghostLane.setLeftLane(currentLane);
-      
-      currentLane = currentLane.getRightLane();
-      ghostLane = ghostLane.getRightLane();
-      
-      currentLane.setRightLane(null);
-      ghostLane.setLeftLane(null);
-      
-      
-      
-   }
 
    public void removeLane()
    {
       if (elementsInTrack > minElementsOnTrack)
       {
-         Lane lane = LaneFactory.getLane(radius);
-         removeLaneFromStack(lane);
-         radius = radius - laneSize;
+         removeLaneFromStack(currentLane);
+         currentLane.setIsActive(false);
          elementsInTrack--;
          
          currentLane.setRightLane(ghostLane);
@@ -124,8 +80,6 @@ public class Carriageway
             ghostLane = ghostLane.getLeftLane();                        
          }
          currentLane = currentLane.getLeftLane();
-         
-        
          
          currentLane.setRightLane(null);
          ghostLane.setLeftLane(null);
@@ -148,20 +102,39 @@ public class Carriageway
       trackPane.getChildren().add(lane.getOuterRoadMarks());
       trackPane.getChildren().add(lane.getInnerRoadMarks());
    }
-
-   public void generateVehicle()
+   
+   public void changeSpeed(double newSpeed)
    {
-//      Vehicle v = new Vehicle(trackPane, baseLane, blockingObject, vehiclePane);
-//      Thread t = new Thread(v);
-//      t.start();
-//      ArrayList<Lane> lanes = getAllAvailableLanes();
-//      lanes.get(0).addObserver(v);
-      
-      Vehicle2 v = new Vehicle2(1.0,baseLane,this,vehiclePane);
-//      Thread t = new Thread(v);
-//      t.start();
-      v.start();
-      
-      
+      Lane currentLane = baseLane;
+      do{
+         currentLane.changeSpeed(newSpeed);;
+         currentLane = currentLane.getRightLane();
+      }
+      while(currentLane != null);
+   }
+
+   public void isMoving(boolean value)
+   {
+      Lane currentLane = baseLane;
+      do{
+         currentLane.isMoving(value);
+         currentLane = currentLane.getRightLane();
+      }
+      while(currentLane != null);
+   }
+   
+   public void setVehicleDensity(int value)
+   {
+      Lane currentLane = baseLane;
+      do{
+         currentLane.setVehicleDensity(value);
+         currentLane = currentLane.getRightLane();
+      }
+      while(currentLane != null);
+   }
+   
+   public boolean isMoving()
+   {
+      return baseLane.isMoving();
    }
 }

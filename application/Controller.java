@@ -1,7 +1,6 @@
 package application;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,9 +13,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
-import model.BlockingElement;
 import model.Carriageway;
 import model.Lane;
+import model.LaneFactory;
 
 public class Controller implements Initializable
 {
@@ -44,13 +43,12 @@ public class Controller implements Initializable
    @FXML
    private Slider velocityHandler;
 
+   @FXML
+   private Slider vehicleDensitySlider;
+   
+   
    private Delta dragDelta =  new Delta(); 
    private Carriageway track;
-   private boolean isMoving = true;
-   private ArrayList<Lane> availableLanes;
-   
-   
-   private BlockingElement be = new BlockingElement();
    
    
    
@@ -58,7 +56,7 @@ public class Controller implements Initializable
    public void initialize(URL location, ResourceBundle resources)
    {  
       
-      track = new Carriageway(trackPane, baseCarriageway, blockObject, vehiclePane);
+      track = new Carriageway(trackPane, baseCarriageway, vehiclePane);
 
       // Makes the vehicle stack pane transparent
       vehiclePane.setStyle("-fx-background-color: rgba(255, 255, 255, 0);");
@@ -70,17 +68,41 @@ public class Controller implements Initializable
       setMouseOnDragged();
       
       setOnMouseReleased();
-      
-      track.generateVehicle();
-      
       // Action taken when object is released
 //      nodes = new ArrayList<>();
 //      nodes.add(vehicle);
 //      nodes.add(blockObject);
       
    }
-  
+
+   @FXML
+   void speedHandler(MouseEvent event)
+   {
+      double sliderValue = (double) velocityHandler.getValue();
+      System.out.println(sliderValue);
+      track.changeSpeed(sliderValue);
+   }
    
+   @FXML
+   void vehicleHandler(MouseEvent event) {
+      int value = (int)vehicleDensitySlider.getValue();
+      if(value < 25)
+      {
+         value = 0;
+      }
+      else if(value < 75)
+      {
+         value = 50;
+      }
+      else
+      {
+         value = 100;
+      }
+      vehicleDensitySlider.setValue(value);
+      
+      track.setVehicleDensity(value);
+   }
+
    public void setMouseOnPressed()
    {
       blockObject.setOnMousePressed((t) -> {
@@ -89,16 +111,13 @@ public class Controller implements Initializable
          blockObject.setCursor(Cursor.HAND);
          Circle r = (Circle) (t.getSource());
          r.toFront();
-         availableLanes = track.getAllAvailableLanes();
          
       });
    }
+   
    public void setOnMouseReleased() {
       blockObject.setOnMouseReleased((t) ->{
-         be.setCenterX(blockObject.getCenterX());
-         be.setCenterY(blockObject.getCenterY());
-         
-//         vehiclePane.getChildren().add(blockObject);
+         // checks for collisions
          checkBounds();
       });
    }
@@ -113,49 +132,38 @@ public class Controller implements Initializable
      
    // Checks if the blocking object and the lane are colliding
    private void checkBounds()
-   {
-      boolean collisionDetected = false;
-      Lane collisionCircle = null;
-      for (Lane lane : availableLanes)
-      {
-         
-         Shape intersect = Shape.intersect(lane.getAsphalt(), blockObject);
-          if (intersect.getBoundsInParent().getWidth() != -1) {
-             collisionDetected = true;
-             collisionCircle = lane;
-             lane.collisionDetected(true);
-             lane.setBlockingObject(blockObject);
-          }
-          else
-          {
-             lane.collisionDetected(false);
-             lane.setBlockingObject(null);
-          }
+   {  
+      Lane currentLane = LaneFactory.getBaseLane();
+      do{
+         Shape intersect = Shape.intersect(currentLane.getAsphalt(), blockObject);
+         if (intersect.getBoundsInParent().getWidth() != -1) {
+            currentLane.setBlockingObject(blockObject);
+            blockObject.setFill(Color.GREEN);
+         }
+         else
+         {
+            currentLane.setBlockingObject(null);
+            currentLane.getAsphalt().setStroke(Color.GREEN);
+            blockObject.setFill(Color.BLUE);
+         }
+         currentLane = currentLane.getRightLane();
       }
-
-      if (collisionDetected)
-      {
-         blockObject.setFill(Color.GREEN);
-         collisionCircle.getAsphalt().setStroke(Color.GREEN);
-      }
-      else
-      {
-         blockObject.setFill(Color.BLUE);
-      }
+      while(currentLane != null);
    }
 
    @FXML
    void playPauseAction(MouseEvent event)
    {
-      if (isMoving)
+      if (track.isMoving())
       {
          playPause.setText("Play");
-         isMoving = false;
+         track.isMoving(false);
+         
       }
       else
       {
          playPause.setText("Pause");
-         isMoving = true;
+         track.isMoving(true);
       }
    }
 
@@ -171,4 +179,7 @@ public class Controller implements Initializable
    {
       track.removeLane();
    }
+
+
+  
 }

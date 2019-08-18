@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Text?>
 
 <SplitPane dividerPositions="0.30060120240480964" pickOnBounds="false" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
   <items>
@@ -19,7 +20,7 @@
             <Button fx:id="playPause" layoutX="37.0" layoutY="99.0" mnemonicParsing="false" onMouseClicked="#playPauseAction" prefHeight="35.0" prefWidth="226.0" styleClass="dark-blue" stylesheets="@application.css" text="Pause" />
             <Button fx:id="addLane" layoutX="34.0" layoutY="159.0" mnemonicParsing="false" onMouseClicked="#addLaneOnClick" prefHeight="35.0" prefWidth="225.0" styleClass="dark-blue" stylesheets="@application.css" text="Add lane" />
             <Button fx:id="removeLane" layoutX="34.0" layoutY="234.0" mnemonicParsing="false" onMouseClicked="#removeLaneOnClick" prefHeight="35.0" prefWidth="226.0" styleClass="dark-blue" stylesheets="@application.css" text="Remove lane" />
-            <Slider fx:id="velocityHandler" layoutX="34.0" layoutY="33.0" prefHeight="14.0" prefWidth="226.0" showTickLabels="true" showTickMarks="true">
+            <Slider fx:id="velocityHandler" layoutX="34.0" layoutY="33.0" onMouseReleased="#speedHandler" prefHeight="14.0" prefWidth="226.0" showTickLabels="true" showTickMarks="true" value="25.0">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -34,6 +35,24 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Slider>
+            <Slider fx:id="vehicleDensitySlider" blockIncrement="1.0" layoutX="33.0" layoutY="326.0" majorTickUnit="50.0" minorTickCount="1" onMouseReleased="#vehicleHandler" prefHeight="14.0" prefWidth="226.0" showTickMarks="true">
+               <effect>
+                  <Lighting>
+                     <bumpInput>
+                        <Shadow blurType="ONE_PASS_BOX" color="#757496" height="211.65" radius="114.2625" width="247.4" />
+                     </bumpInput>
+                     <light>
+                        <Light.Distant color="#d6ddff" />
+                     </light>
+                  </Lighting>
+               </effect>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Slider>
+            <Text layoutX="34.0" layoutY="363.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Low" />
+            <Text layoutX="120.0" layoutY="363.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Moderate" />
+            <Text layoutX="237.0" layoutY="363.0" strokeType="OUTSIDE" strokeWidth="0.0" text="High" />
          </children>
       </AnchorPane>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="700.0" SplitPane.resizableWithParent="false">

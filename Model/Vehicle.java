@@ -1,197 +1,262 @@
 package model;
 
-import javafx.animation.Animation.Status;
 import java.util.Optional;
-import javafx.animation.Interpolator;
-import javafx.animation.PathTransition;
-import javafx.application.Platform;
+import javafx.animation.AnimationTimer;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 
-public class Vehicle implements Observer, Runnable
+public class Vehicle extends AnimationTimer
 {
-   private final double width = 30;
-   private final double height = 15;
-   private Color fill = Color.RED;
-   private Rectangle vehicle;
 
-   private PathTransition transition;
+   private double speed = 25;
+   private Lane currentLane;
+   private double radius;
+   private double angle = 1.57;
 
-   private Bounds blockingBounds;
-   private boolean accidentOnTheRoad;
-   private Circle blockingObject;
-   private Bounds vehicleBounds;
-   private StackPane trackPane;
-   private final double probeSize = 20;
-   private Lane baseLane;
-   private boolean flag;
-   Optional<Node> result = null;
+   private Circle vehicle;
    private Pane vehiclePane;
+   private double vehicleLane;
+   private long lastTimerCall = System.nanoTime();
+   private long One_Sec = 10000000;
+   private boolean collision;
+   Circle frontSensor;
+   Circle rightSensor;
+   Circle leftSensor;
 
-   public Vehicle(StackPane trackPane, Lane baseLane,
-         Circle blockingObject, Pane vehiclePane)
+  
+   public Vehicle(Lane lane,
+         Pane vehiclePane)
    {
-      this.baseLane = baseLane;
-      accidentOnTheRoad = false;
-      this.blockingObject = blockingObject;
-      vehicle = new Rectangle(width, height, fill);
-//      StackPane.setMargin(vehicle, new Insets(15, 0, 0, 30));
-//      trackPane.getChildren().add(vehicle);
-      this.trackPane = trackPane;
-      setupVehicle(vehicle, baseLane.getAsphalt());
-      flag = false;
+      super();
+      vehicle = new Circle(10, Color.RED);
+      frontSensor = new Circle(1, Color.BLUE);
+      rightSensor = new Circle(2, Color.YELLOW);
+      leftSensor = new Circle(2, Color.TRANSPARENT);
+      this.currentLane = lane;
       this.vehiclePane = vehiclePane;
-      vehiclePane.setManaged(true);
-     
-      vehicle.toFront();
+      addVehicle();
+      vehicleLane = lane.getAsphalt().getRadius();
+      double x = ((vehiclePane.getBoundsInParent().getMaxX()
+            + vehiclePane.getBoundsInParent().getMinX()) / 4.0) + 22;
+      double y = ((vehiclePane.getBoundsInParent().getMaxY()
+            + vehiclePane.getBoundsInParent().getMinY()) / 4.0) - 2.5;
+
+      vehicle.setLayoutX(x);
+      vehicle.setLayoutY(y);
+
+      frontSensor.setLayoutX(x);
+      frontSensor.setLayoutY(y);
+      
+      rightSensor.setLayoutX(x);
+      rightSensor.setLayoutY(y);
+      
+      leftSensor.setLayoutX(x);
+      leftSensor.setLayoutY(y);
+
    }
 
-   @Override
-   public void run()
+   public void addVehicle() {
+      vehiclePane.getChildren().addAll(vehicle, frontSensor, rightSensor, leftSensor);
+   }
+   
+   public void removeVehicle() {
+      this.stop();
+      boolean result = vehiclePane.getChildren().removeAll(vehicle, frontSensor, rightSensor, leftSensor);
+      System.out.println(result);
+   }
+   
+   
+   public double getX()
    {
-      // This will keep the vehicle always moving or wanting to move
-      startVehicle();
-      while (true)
+      return vehicle.getCenterX();
+   }
+
+   public void setX(double x)
+   {
+      vehicle.setCenterX(x);
+   }
+
+   public double getY()
+   {
+      return vehicle.getCenterY();
+   }
+
+   public void setY(double y)
+   {
+      vehicle.setCenterY(y);
+   }
+
+   public double getSpeed()
+   {
+      return speed;
+   }
+
+   public void setSpeed(double speed)
+   {
+      this.speed = speed;
+   }
+
+   public void moveInCircle(double radius)
+   {
+      double newX = currentLane.getAsphalt().getCenterX()
+            + (radius * Math.cos(angle));
+      double newY = currentLane.getAsphalt().getCenterY()
+            + (radius * Math.sin(angle));
+
+      vehicle.setTranslateX(newX);
+      vehicle.setTranslateY(newY);
+
+      frontSensor(radius);
+   }
+
+   public void frontSensor(double radius)
+   {
+      double frontSensorLocationX = currentLane.getAsphalt().getCenterX()
+            + (radius * Math.cos(angle + 0.15));
+      double frontSensorLocationY = currentLane.getAsphalt().getCenterY()
+            + (radius * Math.sin(angle + 0.15));
+
+      frontSensor.setTranslateX(frontSensorLocationX);
+      frontSensor.setTranslateY(frontSensorLocationY);
+   }
+
+   // needs to look to the next right currentLane
+   public void rightSensor(double radius)
+   {
+      double rightSensorLocationX = currentLane.getRightLane().getAsphalt().getCenterX()
+            + (radius * Math.cos(angle));
+      double rightSensorLocationY = currentLane.getRightLane().getAsphalt().getCenterY()
+            + (radius * Math.sin(angle));
+
+      rightSensor.setTranslateX(rightSensorLocationX);
+      rightSensor.setTranslateY(rightSensorLocationY);
+   }
+
+   // needs to look to the next left currentLane and
+   public void leftSensor(double radius)
+   {
+      double leftSensorLocationX = currentLane.getLeftLane().getAsphalt().getCenterX()
+            + (radius * Math.cos(angle));
+      double leftSensorLocationY = currentLane.getLeftLane().getAsphalt().getCenterY()
+            + (radius * Math.sin(angle));
+
+      leftSensor.setTranslateX(leftSensorLocationX);
+      leftSensor.setTranslateY(leftSensorLocationY);
+   }
+
+   private boolean isFrontBlocked()
+   {
+      collision = false;
+      collision = collisionSensed(frontSensor);
+      Circle block = currentLane.getBlockingObject();
+      if (block != null)
       {
-         
-         while (!accidentOnTheRoad)
+         Bounds blockBounds = block.localToScreen(block.getBoundsInLocal());
+
+         if (frontSensor.localToScreen(frontSensor.getBoundsInLocal())
+               .intersects(blockBounds))
          {
-            // always check for collision against the front vehicle
-            if (isVehicleStopped())
-            {
-               startVehicle();
-            }
-
+            collision = true;
          }
-
-         // when there is an accident on the road, calculate the distance and if
-         // the distance is less than the specified then it should pause.
-         double distance = calculateDistanceBetweenAccidentAndVehicle();
-         
-         if (distance < 40.0)
-         {
-            // pauseVehicle();
-//            double xOrigin = vehicle.getX();
-//            double yOrigin = vehicle.getY();
-            stopVehicle();
-            try
-            {
-               Thread.sleep(1000);
-            }
-            catch (InterruptedException e)
-            {
-               e.printStackTrace();
-            }
-            baseLane.removeObserver(this);
-            baseLane.getRightLane().addObserver(this);
-
-            Platform.runLater(new Runnable()
-            {
-               public void run()
-               {
-                  Lane right = baseLane.getRightLane();
-                  changeLane(right.getAsphalt());
-               }
-
-            });
-
-            // pauseVehicle();
-
-            // setupVehicle(vehicle, testCircle);
-            break;
-
-         }
-
-         try
-         {
-            Thread.sleep(100);
-         }
-         catch (InterruptedException e)
-         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-         }
-         // look on the other lane to see if it can move.
       }
+      return collision;
    }
 
-   private void changeLane(Circle lane)
+   private boolean collisionSensed(Circle sensor)
    {
-      // get actual position
-      Duration actualPosition = transition.getDuration();
+      Optional<Node> result =
+       (vehiclePane.getChildren().stream()
+            .filter(n -> n instanceof Circle 
+                  && ((Circle)n).getRadius() > 2
+                  && n != vehicle 
+                  && n.getLayoutX() == sensor.getLayoutX()
+                  && n.getLayoutY() == sensor.getLayoutY())
+            .findAny());
+      return result.isPresent();
       
-      // change path of the transition
-      transition.setPath(lane);
-      
-      // update the new position for new lane
-      transition.setDuration(actualPosition);
-      
-      transition.play();
-      vehicle.toFront();
-
    }
 
-   private double calculateDistanceBetweenAccidentAndVehicle()
+   private boolean isRightSideBlocked()
    {
-      Bounds vB = vehicle.getBoundsInParent();
-      double vCenterX = (vB.getMinX() + vB.getMaxX()) / 2.0;
-      double vCenterY = (vB.getMinY() + vB.getMaxY()) / 2.0;
-      Bounds bB = blockingObject.getBoundsInParent();
-      double bCenterX = (bB.getMinX() + bB.getMaxX()) / 2.0;
-      double bCenterY = (bB.getMinY() + bB.getMaxY()) / 2.0;
-
-      Point2D v = new Point2D(vCenterX, vCenterY);
-      Point2D b = new Point2D(bCenterX, bCenterY);
-
-      double distance = v.distance(b);
-      return distance;
-
+      boolean collision = false;
+      if(currentLane.getRightLane() != null)
+      {
+         rightSensor(currentLane.getRightLane().getAsphalt().getRadius());
+         collision = collisionSensed(rightSensor);
+      }
+      else
+      {
+         collision = true;
+      }
+      return collision;
    }
 
-   public void setupVehicle(Rectangle vehicle, Circle baseCarriageway)
+   private boolean isLeftSideBlocked()
    {
-      
-      transition = new PathTransition();
-      transition.setNode(vehicle);
-      transition.setDuration(Duration.seconds(5));
-      transition.setPath(baseCarriageway);
-      transition.setInterpolator(Interpolator.LINEAR);
-      transition.setOrientation(
-            PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
-      transition.setCycleCount(PathTransition.INDEFINITE);
+      boolean collision = false;
+      if(currentLane.getLeftLane() != null)
+      {
+         leftSensor(currentLane.getLeftLane().getAsphalt().getRadius());
+         collision = collisionSensed(leftSensor);
+      }
+      else
+      {
+         collision = true;
+      }
+      return collision;
    }
 
+   public double getRadius()
+   {
+      return radius;
+   }
+
+   public void setRadius(Lane lane)
+   {
+      this.radius = lane.getAsphalt().getRadius();
+   }
+
+   public Lane getLane()
+   {
+      return currentLane;
+   }
+
+   public void setLane(Lane lane)
+   {
+      this.currentLane = lane;
+   }
+      
    @Override
-   public void update(boolean collisionDetected)
+   public void handle(long now)
    {
-      accidentOnTheRoad = collisionDetected;
+      if (now > lastTimerCall + One_Sec)
+      {
 
-   }
-
-   private void startVehicle()
-   {
-      transition.play();
-   }
-
-   private void pauseVehicle()
-   {
-      transition.pause();
-   }
-
-   private void stopVehicle()
-   {
-      transition.stop();
-   }
-
-   private boolean isVehicleStopped()
-   {
-      return transition.getStatus() == Status.PAUSED;
+         if (!isFrontBlocked())
+         {
+            moveInCircle(vehicleLane);
+            angle += getSpeed() * 0.0011;
+            lastTimerCall = now;
+         }
+         else
+         {
+            // go left
+            if (!isLeftSideBlocked())
+            {
+               currentLane = currentLane.getLeftLane();
+               vehicleLane = currentLane.getAsphalt().getRadius();
+               moveInCircle(vehicleLane);
+            }
+            else if (!isRightSideBlocked())
+            {
+               currentLane = currentLane.getRightLane();
+               vehicleLane = currentLane.getAsphalt().getRadius();
+               moveInCircle(vehicleLane);
+            }
+         }
+      }
    }
 }
