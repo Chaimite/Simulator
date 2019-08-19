@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -24,6 +23,10 @@ public class Lane
    private int vehicleDensity;
    private Pane vehiclePane;
    private boolean isActive;
+   private long period = 10000L;
+   private long lastTime= System.currentTimeMillis() - period;
+   private double x;
+   private double y;
 
    public Lane(double radius, Pane vehiclePane)
    {
@@ -45,9 +48,13 @@ public class Lane
 
       vehicles = new ArrayList<>();
       maxVehicles = (int) ((((int) (2 * Math.PI * asphalt.getRadius())) / 10)
-            * 0.8);
+            * 0.2);
       vehicleDensity = 0;
       this.isActive = false;
+       x = ((vehiclePane.getBoundsInParent().getMaxX()
+            + vehiclePane.getBoundsInParent().getMinX()) / 4.0) + 22;
+       y = ((vehiclePane.getBoundsInParent().getMaxY()
+            + vehiclePane.getBoundsInParent().getMinY()) / 4.0) - 2.5;
    }
 
    public Lane(Circle asphalt, Pane vehiclePane)
@@ -57,9 +64,13 @@ public class Lane
 
       vehicles = new ArrayList<>();
       maxVehicles = (int) ((((int) (2 * Math.PI * asphalt.getRadius())) / 10)
-            * 0.3);
+            * 0.2);
       vehicleDensity = 0;
       this.isActive = false;
+      x = ((vehiclePane.getBoundsInParent().getMaxX()
+            + vehiclePane.getBoundsInParent().getMinX()) / 4.0) + 22;
+      y = ((vehiclePane.getBoundsInParent().getMaxY()
+            + vehiclePane.getBoundsInParent().getMinY()) / 4.0) - 2.5;
    }
 
    public Circle getAsphalt()
@@ -206,7 +217,7 @@ public class Lane
       }
       else if (vehicleDensity == 50)
       {
-         numberOfVehicles = (int) (maxVehicles * 0.2);
+         numberOfVehicles = (int) (maxVehicles * 0.17);
       }
       else
       {
@@ -219,9 +230,9 @@ public class Lane
    {
       for (int i = vehicles.size(); i < getNumberOfVehicles(); i++)
       {
-         Vehicle v = new Vehicle(this, vehiclePane);
+         Vehicle v = new Vehicle("V" + vehicles.size(),this, vehiclePane, x, y);
          v.start();
-         vehicles.add(v);
+         addVehicle(v);
       }
    }
 
@@ -232,10 +243,20 @@ public class Lane
       {
          Vehicle v = vehicles.get(0);
          v.removeVehicle();
-         vehicles.remove(v);
+         removeVehicle(v);
       }
    }
-
+   
+   public void addVehicle(Vehicle v)
+   {
+      vehicles.add(v);      
+   }
+   
+   public void removeVehicle(Vehicle v)
+   {
+      vehicles.remove(v);      
+   }
+   
    public void setIsActive(boolean isActive)
    {
       this.isActive = isActive;

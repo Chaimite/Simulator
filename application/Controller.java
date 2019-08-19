@@ -74,7 +74,10 @@ public class Controller implements Initializable
 //      nodes.add(blockObject);
       
    }
-
+   public class Delta
+   {
+      double x, y;
+   }
    @FXML
    void speedHandler(MouseEvent event)
    {

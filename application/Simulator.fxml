@@ -17,10 +17,10 @@
   <items>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="300.0" SplitPane.resizableWithParent="false">
          <children>
-            <Button fx:id="playPause" layoutX="37.0" layoutY="99.0" mnemonicParsing="false" onMouseClicked="#playPauseAction" prefHeight="35.0" prefWidth="226.0" styleClass="dark-blue" stylesheets="@application.css" text="Pause" />
-            <Button fx:id="addLane" layoutX="34.0" layoutY="159.0" mnemonicParsing="false" onMouseClicked="#addLaneOnClick" prefHeight="35.0" prefWidth="225.0" styleClass="dark-blue" stylesheets="@application.css" text="Add lane" />
-            <Button fx:id="removeLane" layoutX="34.0" layoutY="234.0" mnemonicParsing="false" onMouseClicked="#removeLaneOnClick" prefHeight="35.0" prefWidth="226.0" styleClass="dark-blue" stylesheets="@application.css" text="Remove lane" />
-            <Slider fx:id="velocityHandler" layoutX="34.0" layoutY="33.0" onMouseReleased="#speedHandler" prefHeight="14.0" prefWidth="226.0" showTickLabels="true" showTickMarks="true" value="25.0">
+            <Button fx:id="playPause" layoutX="37.0" layoutY="48.0" mnemonicParsing="false" onMouseClicked="#playPauseAction" prefHeight="35.0" prefWidth="226.0" styleClass="dark-blue" stylesheets="@application.css" text="Pause" />
+            <Button fx:id="addLane" layoutX="38.0" layoutY="114.0" mnemonicParsing="false" onMouseClicked="#addLaneOnClick" prefHeight="35.0" prefWidth="226.0" styleClass="dark-blue" stylesheets="@application.css" text="Add lane" />
+            <Button fx:id="removeLane" layoutX="37.0" layoutY="176.0" mnemonicParsing="false" onMouseClicked="#removeLaneOnClick" prefHeight="35.0" prefWidth="226.0" styleClass="dark-blue" stylesheets="@application.css" text="Remove lane" />
+            <Slider fx:id="velocityHandler" layoutX="32.0" layoutY="329.0" onMouseReleased="#speedHandler" prefHeight="14.0" prefWidth="226.0" showTickLabels="true" showTickMarks="true" value="25.0">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -35,7 +35,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Slider>
-            <Slider fx:id="vehicleDensitySlider" blockIncrement="1.0" layoutX="33.0" layoutY="326.0" majorTickUnit="50.0" minorTickCount="1" onMouseReleased="#vehicleHandler" prefHeight="14.0" prefWidth="226.0" showTickMarks="true">
+            <Slider fx:id="vehicleDensitySlider" blockIncrement="1.0" layoutX="32.0" layoutY="426.0" majorTickUnit="50.0" minorTickCount="1" onMouseReleased="#vehicleHandler" prefHeight="14.0" prefWidth="226.0" showTickMarks="true">
                <effect>
                   <Lighting>
                      <bumpInput>
@@ -50,9 +50,11 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Slider>
-            <Text layoutX="34.0" layoutY="363.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Low" />
-            <Text layoutX="120.0" layoutY="363.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Moderate" />
-            <Text layoutX="237.0" layoutY="363.0" strokeType="OUTSIDE" strokeWidth="0.0" text="High" />
+            <Text layoutX="34.0" layoutY="463.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Low" />
+            <Text layoutX="121.0" layoutY="463.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Moderate" />
+            <Text layoutX="237.0" layoutY="462.0" strokeType="OUTSIDE" strokeWidth="0.0" text="High" />
+            <Text layoutX="105.0" layoutY="412.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vehicle Density" />
+            <Text layoutX="106.0" layoutY="312.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vehicles Speed" />
          </children>
       </AnchorPane>
     <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="700.0" SplitPane.resizableWithParent="false">
