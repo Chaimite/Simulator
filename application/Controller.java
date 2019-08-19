@@ -10,7 +10,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import model.Carriageway;
@@ -67,25 +66,24 @@ public class Controller implements Initializable
       // Making the object move
       setMouseOnDragged();
       
+      // Action taken when blocking element is released 
       setOnMouseReleased();
-      // Action taken when object is released
-//      nodes = new ArrayList<>();
-//      nodes.add(vehicle);
-//      nodes.add(blockObject);
-      
    }
+   
    public class Delta
    {
       double x, y;
    }
+   
+   // Action for vehicle speed slider
    @FXML
    void speedHandler(MouseEvent event)
    {
       double sliderValue = (double) velocityHandler.getValue();
-      System.out.println(sliderValue);
       track.changeSpeed(sliderValue);
    }
    
+   // Action for vehicle density slider
    @FXML
    void vehicleHandler(MouseEvent event) {
       int value = (int)vehicleDensitySlider.getValue();
@@ -105,16 +103,13 @@ public class Controller implements Initializable
       
       track.setVehicleDensity(value);
    }
-
+   // Make cursor change when it's on top of blocking element
    public void setMouseOnPressed()
    {
-      blockObject.setOnMousePressed((t) -> {
-
-         // Make cursor change when it's on top of blocking element
+      blockObject.setOnMousePressed((t) -> {     
          blockObject.setCursor(Cursor.HAND);
          Circle r = (Circle) (t.getSource());
-         r.toFront();
-         
+         r.toFront();       
       });
    }
    
@@ -124,7 +119,7 @@ public class Controller implements Initializable
          checkBounds();
       });
    }
-
+   // Sets the position of the block object
    public void setMouseOnDragged()
    {
       blockObject.setOnMouseDragged((t) -> {
@@ -141,19 +136,17 @@ public class Controller implements Initializable
          Shape intersect = Shape.intersect(currentLane.getAsphalt(), blockObject);
          if (intersect.getBoundsInParent().getWidth() != -1) {
             currentLane.setBlockingObject(blockObject);
-            blockObject.setFill(Color.GREEN);
          }
          else
          {
             currentLane.setBlockingObject(null);
-            currentLane.getAsphalt().setStroke(Color.GREEN);
-            blockObject.setFill(Color.BLUE);
          }
          currentLane = currentLane.getRightLane();
       }
       while(currentLane != null);
    }
-
+   
+   //Play pause button
    @FXML
    void playPauseAction(MouseEvent event)
    {
@@ -170,13 +163,14 @@ public class Controller implements Initializable
       }
    }
 
-   // Adding and removing lanes
+   // Adding lane button
    @FXML
    void addLaneOnClick(MouseEvent event)
    {
       track.addLane();
    }
-
+   
+   // Removing lane
    @FXML
    void removeLaneOnClick(MouseEvent event)
    {

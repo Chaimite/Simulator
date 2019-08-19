@@ -1,6 +1,5 @@
 package model;
 
-
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
@@ -22,7 +21,7 @@ public class Carriageway
       baseLane.setIsActive(true);
       currentLane = baseLane;
       ghostLane = baseLane.getRightLane();
-      
+      // Sets left and right ghost lanes
       ghostLane.setLeftLane(null);
       currentLane.setRightLane(null);
       
@@ -30,7 +29,7 @@ public class Carriageway
       elementsInTrack = 1;
       
    }
-
+   // Adds lane in carriage way
    public void addLane()
    {
       if (!(elementsInTrack < maxElementsOnTrack))
@@ -44,7 +43,7 @@ public class Carriageway
       if(ghostLane != null) {        
          ghostLane.setLeftLane(currentLane);
       }
-      
+      // Needs comments, linked list part
       currentLane = currentLane.getRightLane();
       ghostLane = ghostLane.getRightLane();
       
@@ -56,7 +55,7 @@ public class Carriageway
       
       elementsInTrack++;
    }
-
+   // Removes a lane from carriage way
    public void removeLane()
    {
       if (elementsInTrack > minElementsOnTrack)
@@ -87,7 +86,7 @@ public class Carriageway
       }
    }
 
-   // Removes a lane
+   // Removes a complete lane to the stack
    private void removeLaneFromStack(Lane lane)
    {
       trackPane.getChildren().remove(lane.getAsphalt());
@@ -95,7 +94,7 @@ public class Carriageway
       trackPane.getChildren().remove(lane.getInnerRoadMarks());
    }
 
-   // Adds a lane
+   // Adds a complete lane to the stack
    private void addLaneToStack(Lane lane)
    {
       trackPane.getChildren().add(lane.getAsphalt());
@@ -103,6 +102,8 @@ public class Carriageway
       trackPane.getChildren().add(lane.getInnerRoadMarks());
    }
    
+   // Changes speed of
+   // establishes the current lane has the right lane if there is a lane
    public void changeSpeed(double newSpeed)
    {
       Lane currentLane = baseLane;
@@ -113,6 +114,7 @@ public class Carriageway
       while(currentLane != null);
    }
 
+   // Establishes 
    public void isMoving(boolean value)
    {
       Lane currentLane = baseLane;
