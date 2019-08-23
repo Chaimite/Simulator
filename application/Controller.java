@@ -5,7 +5,9 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -45,9 +47,13 @@ public class Controller implements Initializable
    @FXML
    private Slider vehicleDensitySlider;
    
-   
+   @FXML
+   private Label numberOfVehicles;
+     
    private Delta dragDelta =  new Delta(); 
    private Carriageway track;
+   private int totalNumberOfVehiclesInPane = 0;
+   
    
    
    
@@ -70,10 +76,10 @@ public class Controller implements Initializable
       setOnMouseReleased();
    }
    
-   public class Delta
-   {
-      double x, y;
-   }
+//   public class Delta
+//   {
+//      double x, y;
+//   }
    
    // Action for vehicle speed slider
    @FXML
@@ -100,9 +106,28 @@ public class Controller implements Initializable
          value = 100;
       }
       vehicleDensitySlider.setValue(value);
-      
+      // Set the value of the density of vehicles in the vehicle pane
       track.setVehicleDensity(value);
+      // Updates the number of vehicles existing in the vehicle pane
+      numberOfVehicles.setText(Integer.toString( getNumberOfVehiclesInPane()));
+     
    }
+   
+   // This method gets the number of vehicles in the pane
+   public int getNumberOfVehiclesInPane()
+   {
+      totalNumberOfVehiclesInPane = 0;
+      for (Node circle : vehiclePane.getChildren())
+      {
+         if (circle instanceof Circle && ((Circle) circle).getRadius() > 2//this is to skip the sensors
+               && ((Circle) circle).getRadius() < 11)//this is to skip the blocking element
+         {
+            totalNumberOfVehiclesInPane++;
+         }
+      }
+      return totalNumberOfVehiclesInPane;
+   }
+   
    // Make cursor change when it's on top of blocking element
    public void setMouseOnPressed()
    {
@@ -168,6 +193,8 @@ public class Controller implements Initializable
    void addLaneOnClick(MouseEvent event)
    {
       track.addLane();
+      numberOfVehicles.setText(Integer.toString( getNumberOfVehiclesInPane()));
+      
    }
    
    // Removing lane
@@ -175,6 +202,7 @@ public class Controller implements Initializable
    void removeLaneOnClick(MouseEvent event)
    {
       track.removeLane();
+      numberOfVehicles.setText(Integer.toString( getNumberOfVehiclesInPane()));
    }
 
 

@@ -25,6 +25,7 @@ public class Lane
    private boolean isActive;
    private double x;
    private double y;
+   public Vehicle getVehicle;
 
    public Lane(double radius, Pane vehiclePane)
    {
@@ -81,6 +82,10 @@ public class Lane
             + vehiclePane.getBoundsInParent().getMinY()) / 4.0) - 2.5;
    }
    
+   
+   public ArrayList<Vehicle> getVehicles() {
+       return vehicles;
+   }
    // Getter for asphalt
    public Circle getAsphalt()
    {
@@ -259,6 +264,7 @@ public class Lane
    {
       for (int i = vehicles.size(); i < getNumberOfVehicles(); i++)
       {
+//         double speed = vehicles.get(0).getSpeed();
          Vehicle v = new Vehicle("V" + vehicles.size(),this, vehiclePane, x, y);
          // The vehicle needs to be started
          v.start();
@@ -300,5 +306,8 @@ public class Lane
    {
       this.isActive = isActive;
       generateVehicles();
+   }
+   public int getVehiclesSize() {
+      return vehicles.size();
    }
 }

@@ -33,7 +33,7 @@ public class Vehicle extends AnimationTimer
          Pane vehiclePane, double x, double y)
    {
       super();
-      vehicle = new Circle(10, Color.RED);
+      vehicle = new Circle(10, Color.CORNFLOWERBLUE);
       frontSensor = new Circle(1, Color.TRANSPARENT);
       rightSensor = new Circle(2, Color.TRANSPARENT);
       leftSensor = new Circle(2, Color.TRANSPARENT);
@@ -50,7 +50,7 @@ public class Vehicle extends AnimationTimer
       // Sets x and y values for front sensor, if it
       // doesn't exist the vehicle goes to the top left corner
       frontSensor.setLayoutX(x);
-      frontSensor.setLayoutY(y+5);// this value of 
+      frontSensor.setLayoutY(y);// this value of 
       // 5 allows for the next vehicle not be caught by it
       
       // Sets x and y values for right sensor
@@ -260,6 +260,7 @@ public class Vehicle extends AnimationTimer
    public void handle(long now)
    {
       // Starts moving the vehicle
+
       if(startedMoving)
       {
          if (now > lastTimerCall + One_Sec)
@@ -299,6 +300,7 @@ public class Vehicle extends AnimationTimer
                   // System.out.println(name + " All sides are blocked. stopping!!");
                   // There is no need of introducing code here, since it means
                   // that the vehicles will not advance and will stop 
+
                }
             }
          }

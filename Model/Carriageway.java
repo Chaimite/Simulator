@@ -36,6 +36,8 @@ public class Carriageway
       {
          return;
       }
+      double speed = baseLane.getVehicles().get(0).getSpeed();
+      ghostLane.changeSpeed(speed);
       addLaneToStack(ghostLane);
       ghostLane.setIsActive(true);
       
@@ -138,5 +140,10 @@ public class Carriageway
    public boolean isMoving()
    {
       return baseLane.isMoving();
+   }
+   
+   public int getElementsInTrack() 
+   {
+      return elementsInTrack;
    }
 }

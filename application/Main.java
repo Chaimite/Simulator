@@ -18,6 +18,7 @@ public class Main extends Application {
 			Scene scene = new Scene(root,width,height);
 			
 			primaryStage.setScene(scene);
+			primaryStage.setResizable(false);
 			primaryStage.setTitle("Traffic Simulator");
 			primaryStage.show();
 		} catch(Exception e) {
