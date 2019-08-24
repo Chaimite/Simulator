@@ -22,14 +22,14 @@ public class Vehicle extends AnimationTimer
    private long lastTimerCall = System.nanoTime();
    private long One_Sec = 10000000;
    private boolean collision;
-   Circle frontSensor;
-   Circle rightSensor;
-   Circle leftSensor;
+   private Circle frontSensor;
+   private Circle rightSensor;
+   private Circle leftSensor;
    private boolean startedMoving;
-   private double sensorPosition = 0.15;
+   private final double sensorPosition = 0.15;
 
   
-   public Vehicle(String name,Lane lane,
+   public Vehicle(Lane lane,
          Pane vehiclePane, double x, double y)
    {
       super();

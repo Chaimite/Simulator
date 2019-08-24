@@ -205,6 +205,4 @@ public class Controller implements Initializable
       numberOfVehicles.setText(Integer.toString( getNumberOfVehiclesInPane()));
    }
 
-
-  
 }

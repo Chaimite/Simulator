@@ -86,6 +86,7 @@ public class Lane
    public ArrayList<Vehicle> getVehicles() {
        return vehicles;
    }
+   
    // Getter for asphalt
    public Circle getAsphalt()
    {
@@ -128,16 +129,16 @@ public class Lane
       return rightLane;
    }
 
-   // Getter for left lane
-   public Lane getLeftLane()
-   {
-      return leftLane;
-   }
-
    // Setter for right lane
    public void setRightLane(Lane rightLane)
    {
       this.rightLane = rightLane;
+   }
+   
+   // Getter for left lane
+   public Lane getLeftLane()
+   {
+      return leftLane;
    }
    
    // Setter for left lane
@@ -265,7 +266,7 @@ public class Lane
       for (int i = vehicles.size(); i < getNumberOfVehicles(); i++)
       {
 //         double speed = vehicles.get(0).getSpeed();
-         Vehicle v = new Vehicle("V" + vehicles.size(),this, vehiclePane, x, y);
+         Vehicle v = new Vehicle(this, vehiclePane, x, y);
          // The vehicle needs to be started
          v.start();
          // The vehicle is added to the ArrayList
@@ -306,8 +307,5 @@ public class Lane
    {
       this.isActive = isActive;
       generateVehicles();
-   }
-   public int getVehiclesSize() {
-      return vehicles.size();
    }
 }

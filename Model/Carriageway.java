@@ -141,9 +141,5 @@ public class Carriageway
    {
       return baseLane.isMoving();
    }
-   
-   public int getElementsInTrack() 
-   {
-      return elementsInTrack;
-   }
+
 }
