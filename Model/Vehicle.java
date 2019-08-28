@@ -143,9 +143,9 @@ public class Vehicle extends AnimationTimer
    // Creates a sensor on the right side and positions it in the right lane of the current lane
    public void rightSensor(double radius)
    {
-      double rightSensorLocationX = currentLane.getRightLane().getAsphalt().getCenterX()
+      double rightSensorLocationX = currentLane.getOuterLane().getAsphalt().getCenterX()
             + (radius * Math.cos(angle));
-      double rightSensorLocationY = currentLane.getRightLane().getAsphalt().getCenterY()
+      double rightSensorLocationY = currentLane.getOuterLane().getAsphalt().getCenterY()
             + (radius * Math.sin(angle));
 
       rightSensor.setTranslateX(rightSensorLocationX);
@@ -155,9 +155,9 @@ public class Vehicle extends AnimationTimer
    // Creates a sensor on the left side and positions it in the right lane of the current lane
    public void leftSensor(double radius)
    {
-      double leftSensorLocationX = currentLane.getLeftLane().getAsphalt().getCenterX()
+      double leftSensorLocationX = currentLane.getInnerLane().getAsphalt().getCenterX()
             + (radius * Math.cos(angle));
-      double leftSensorLocationY = currentLane.getLeftLane().getAsphalt().getCenterY()
+      double leftSensorLocationY = currentLane.getInnerLane().getAsphalt().getCenterY()
             + (radius * Math.sin(angle));
 
       leftSensor.setTranslateX(leftSensorLocationX);
@@ -202,9 +202,9 @@ public class Vehicle extends AnimationTimer
    private boolean isRightSideBlocked()
    {
       boolean collision = false;
-      if(currentLane.getRightLane() != null)
+      if(currentLane.getOuterLane() != null)
       {
-         rightSensor(currentLane.getRightLane().getAsphalt().getRadius());
+         rightSensor(currentLane.getOuterLane().getAsphalt().getRadius());
          collision = collisionSensed(rightSensor);
       }
       else
@@ -218,9 +218,9 @@ public class Vehicle extends AnimationTimer
    private boolean isLeftSideBlocked()
    {
       boolean collision = false;
-      if(currentLane.getLeftLane() != null)
+      if(currentLane.getInnerLane() != null)
       {
-         leftSensor(currentLane.getLeftLane().getAsphalt().getRadius());
+         leftSensor(currentLane.getInnerLane().getAsphalt().getRadius());
          collision = collisionSensed(leftSensor);
       }
       else
@@ -281,7 +281,7 @@ public class Vehicle extends AnimationTimer
                if (!isLeftSideBlocked())
                {
                   currentLane.removeVehicle(this);
-                  currentLane = currentLane.getLeftLane();
+                  currentLane = currentLane.getInnerLane();
                   currentLane.addVehicle(this);
                   vehicleLane = currentLane.getAsphalt().getRadius();
                   moveInCircle(vehicleLane);
@@ -290,7 +290,7 @@ public class Vehicle extends AnimationTimer
                else if (!isRightSideBlocked())
                {
                   currentLane.removeVehicle(this);
-                  currentLane = currentLane.getRightLane();
+                  currentLane = currentLane.getOuterLane();
                   currentLane.addVehicle(this);
                   vehicleLane = currentLane.getAsphalt().getRadius();
                   moveInCircle(vehicleLane);

@@ -166,7 +166,7 @@ public class Controller implements Initializable
          {
             currentLane.setBlockingObject(null);
          }
-         currentLane = currentLane.getRightLane();
+         currentLane = currentLane.getOuterLane();
       }
       while(currentLane != null);
    }

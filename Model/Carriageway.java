@@ -20,10 +20,10 @@ public class Carriageway
       baseLane = LaneFactory.generateLanes(asphalt, vehiclePane);
       baseLane.setIsActive(true);
       currentLane = baseLane;
-      ghostLane = baseLane.getRightLane();
+      ghostLane = baseLane.getOuterLane();
       // Sets left and right ghost lanes
-      ghostLane.setLeftLane(null);
-      currentLane.setRightLane(null);
+      ghostLane.setInnerLane(null);
+      currentLane.setOuterLane(null);
       
       this.trackPane = trackPane;
       elementsInTrack = 1;
@@ -41,18 +41,18 @@ public class Carriageway
       addLaneToStack(ghostLane);
       ghostLane.setIsActive(true);
       
-      currentLane.setRightLane(ghostLane);
+      currentLane.setOuterLane(ghostLane);
       if(ghostLane != null) {        
-         ghostLane.setLeftLane(currentLane);
+         ghostLane.setInnerLane(currentLane);
       }
       // Needs comments, linked list part
-      currentLane = currentLane.getRightLane();
-      ghostLane = ghostLane.getRightLane();
+      currentLane = currentLane.getOuterLane();
+      ghostLane = ghostLane.getOuterLane();
       
-      currentLane.setRightLane(null);
+      currentLane.setOuterLane(null);
       if(ghostLane != null)
       {
-         ghostLane.setLeftLane(null);         
+         ghostLane.setInnerLane(null);         
       }
       
       elementsInTrack++;
@@ -66,10 +66,10 @@ public class Carriageway
          currentLane.setIsActive(false);
          elementsInTrack--;
          
-         currentLane.setRightLane(ghostLane);
+         currentLane.setOuterLane(ghostLane);
          if(ghostLane != null)
          {
-            ghostLane.setLeftLane(currentLane);            
+            ghostLane.setInnerLane(currentLane);            
          }
          
          if(ghostLane == null)
@@ -78,12 +78,12 @@ public class Carriageway
          }
          else
          {
-            ghostLane = ghostLane.getLeftLane();                        
+            ghostLane = ghostLane.getInnerLane();                        
          }
-         currentLane = currentLane.getLeftLane();
+         currentLane = currentLane.getInnerLane();
          
-         currentLane.setRightLane(null);
-         ghostLane.setLeftLane(null);
+         currentLane.setOuterLane(null);
+         ghostLane.setInnerLane(null);
          
       }
    }
@@ -111,7 +111,7 @@ public class Carriageway
       Lane currentLane = baseLane;
       do{
          currentLane.changeSpeed(newSpeed);;
-         currentLane = currentLane.getRightLane();
+         currentLane = currentLane.getOuterLane();
       }
       while(currentLane != null);
    }
@@ -122,7 +122,7 @@ public class Carriageway
       Lane currentLane = baseLane;
       do{
          currentLane.isMoving(value);
-         currentLane = currentLane.getRightLane();
+         currentLane = currentLane.getOuterLane();
       }
       while(currentLane != null);
    }
@@ -132,7 +132,7 @@ public class Carriageway
       Lane currentLane = baseLane;
       do{
          currentLane.setVehicleDensity(value);
-         currentLane = currentLane.getRightLane();
+         currentLane = currentLane.getOuterLane();
       }
       while(currentLane != null);
    }

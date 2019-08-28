@@ -13,8 +13,8 @@ public class Lane
    private Circle outerRoadMarks;
    private final Color roadMarksColor = Color.WHITE;
    private final Color circleInsideColor = Color.TRANSPARENT;
-   private Lane rightLane;
-   private Lane leftLane;
+   private Lane outerLane;
+   private Lane innerLane;
    private Circle blockObject;
    private ArrayList<Vehicle> vehicles;
    private int numberOfVehicles;
@@ -124,27 +124,27 @@ public class Lane
    }
    
    // Getter for right lane
-   public Lane getRightLane()
+   public Lane getOuterLane()
    {
-      return rightLane;
+      return outerLane;
    }
 
    // Setter for right lane
-   public void setRightLane(Lane rightLane)
+   public void setOuterLane(Lane outerLane)
    {
-      this.rightLane = rightLane;
+      this.outerLane = outerLane;
    }
    
    // Getter for left lane
-   public Lane getLeftLane()
+   public Lane getInnerLane()
    {
-      return leftLane;
+      return innerLane;
    }
    
    // Setter for left lane
-   public void setLeftLane(Lane leftLane)
+   public void setInnerLane(Lane innerLane)
    {
-      this.leftLane = leftLane;
+      this.innerLane = innerLane;
    }
 
    // Setter for blocking object
