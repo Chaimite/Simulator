@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.effect.Light.Distant?>
+<?import javafx.scene.effect.Lighting?>
+<?import javafx.scene.effect.Shadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Text?>
+
+<SplitPane dividerPositions="0.30060120240480964" pickOnBounds="false" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+  <items>
+    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="300.0" SplitPane.resizableWithParent="false">
+         <children>
+            <Button fx:id="playPause" layoutX="37.0" layoutY="48.0" mnemonicParsing="false" onMouseClicked="#playPauseAction" prefHeight="35.0" prefWidth="226.0" styleClass="dark-blue" stylesheets="@application.css" text="Pause" />
+            <Button fx:id="addLane" layoutX="38.0" layoutY="114.0" mnemonicParsing="false" onMouseClicked="#addLaneOnClick" prefHeight="35.0" prefWidth="226.0" styleClass="dark-blue" stylesheets="@application.css" text="Add lane" />
+            <Button fx:id="removeLane" layoutX="37.0" layoutY="176.0" mnemonicParsing="false" onMouseClicked="#removeLaneOnClick" prefHeight="35.0" prefWidth="226.0" styleClass="dark-blue" stylesheets="@application.css" text="Remove lane" />
+            <Slider fx:id="velocityHandler" blockIncrement="5.0" layoutX="32.0" layoutY="329.0" minorTickCount="4" onMouseReleased="#speedHandler" prefHeight="14.0" prefWidth="226.0" showTickLabels="true" showTickMarks="true" value="25.0">
+               <effect>
+                  <Lighting>
+                     <bumpInput>
+                        <Shadow blurType="ONE_PASS_BOX" color="#757496" height="211.65" radius="114.2625" width="247.4" />
+                     </bumpInput>
+                     <light>
+                        <Light.Distant color="#d6ddff" />
+                     </light>
+                  </Lighting>
+               </effect>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Slider>
+            <Slider fx:id="vehicleDensitySlider" blockIncrement="1.0" layoutX="32.0" layoutY="426.0" majorTickUnit="50.0" minorTickCount="1" onMouseReleased="#vehicleHandler" prefHeight="14.0" prefWidth="226.0" showTickMarks="true">
+               <effect>
+                  <Lighting>
+                     <bumpInput>
+                        <Shadow blurType="ONE_PASS_BOX" color="#757496" height="211.65" radius="114.2625" width="247.4" />
+                     </bumpInput>
+                     <light>
+                        <Light.Distant color="#d6ddff" />
+                     </light>
+                  </Lighting>
+               </effect>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Slider>
+            <Text layoutX="34.0" layoutY="463.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Low" />
+            <Text layoutX="121.0" layoutY="463.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Moderate" />
+            <Text layoutX="237.0" layoutY="462.0" strokeType="OUTSIDE" strokeWidth="0.0" text="High" />
+            <Text layoutX="105.0" layoutY="412.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vehicle Density" />
+            <Text layoutX="106.0" layoutY="312.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vehicles Speed" />
+            <Label fx:id="numberOfVehicles" layoutX="141.0" layoutY="535.0" text="1" />
+            <Text layoutX="82.0" layoutY="525.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vehicles in carriage way" />
+         </children>
+      </AnchorPane>
+    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="700.0" SplitPane.resizableWithParent="false">
+         <children>
+            <StackPane fx:id="trackPane" alignment="CENTER" pickOnBounds="false" prefHeight="798.0" prefWidth="692.0">
+               <children>
+                  <Circle fill="#f5f6f700" radius="115.0" stroke="#ffffff00" strokeType="INSIDE" strokeWidth="2.0" StackPane.alignment="CENTER" />
+                  <Circle fill="#ffffff00" radius="87.0" stroke="BLACK" strokeType="INSIDE" StackPane.alignment="CENTER" />
+                  <Circle fx:id="baseCarriageway" fill="#ffffff00" radius="100.0" stroke="LIGHTGRAY" strokeWidth="25.0" StackPane.alignment="CENTER" />
+               </children>
+            </StackPane>
+            <Pane fx:id="vehiclePane" layoutX="216.0" layoutY="268.0" pickOnBounds="false" prefHeight="254.0" prefWidth="255.0" />
+            <Circle fx:id="blockObject" fill="#ff1f1f" layoutX="667.0" layoutY="23.0" radius="11.0" stroke="BLACK" strokeType="INSIDE" />
+         </children>
+      </AnchorPane>
+  </items>
+</SplitPane>
