@@ -34,62 +34,80 @@ public class Carriageway
    {
       if (!(elementsInTrack < maxElementsOnTrack))
       {
-         return;
+         return;// does nothing if this condition is not satisfied
       }
+      // changes the speed of vehicles in the ghost lane
       double speed = baseLane.getVehicles().get(0).getSpeed();
       ghostLane.changeSpeed(speed);
+      //adds new lane to stack and sets it as active
       addLaneToStack(ghostLane);
       ghostLane.setIsActive(true);
-      
+      //sets the ghost lane as the outer lane of the current lane
       currentLane.setOuterLane(ghostLane);
-      if(ghostLane != null) {        
+      //if there is a lane
+      if(ghostLane != null) {
+         //sets the current lane as the inner lane of the ghost lane
          ghostLane.setInnerLane(currentLane);
       }
-      // Needs comments, linked list part
+      //makes the outer lane of the current lane to be current lane
       currentLane = currentLane.getOuterLane();
+      // makes the ghost lane to be the outer lane of the ghost lane
       ghostLane = ghostLane.getOuterLane();
-      
+      // sets the outer lane of the current lane as null
       currentLane.setOuterLane(null);
+      //if there is a lane
       if(ghostLane != null)
       {
+         // sets inner lane of the ghost lane as null
          ghostLane.setInnerLane(null);         
       }
-      
+      // increases the counter
       elementsInTrack++;
    }
    // Removes a lane from carriage way
    public void removeLane()
-   {
+   {  // checks the number of elements in the track
       if (elementsInTrack > minElementsOnTrack)
       {
+         // removes the current lane from the stack
          removeLaneFromStack(currentLane);
+         // sets the current lane as not active
          currentLane.setIsActive(false);
+         // decreases the elements in track counter
          elementsInTrack--;
-         
+         // sets the ghost lane as the outer lane of the ghost lane
          currentLane.setOuterLane(ghostLane);
+         // checks if the there is a ghost lane
          if(ghostLane != null)
          {
+            // sets the current lane as the inner lane of the ghost lane
             ghostLane.setInnerLane(currentLane);            
          }
          
+         // checks if the ghost lane does not exist
          if(ghostLane == null)
          {
+            // sets the ghost lane as the current lane
             ghostLane = currentLane;
          }
          else
          {
+            // sets the ghost lane as the inner lane of the ghost lane
             ghostLane = ghostLane.getInnerLane();                        
          }
+         // sets the current lane as the inner lane of the current lane
          currentLane = currentLane.getInnerLane();
          
+         // sets the outer lane of the current lane as null
          currentLane.setOuterLane(null);
+         // sets the inner lane of the ghost lane as null
          ghostLane.setInnerLane(null);
          
       }
    }
 
    // Removes a complete lane to the stack
-   private void removeLaneFromStack(Lane lane)
+   private void removeLaneFromStack(Lane lane) 
    {
       trackPane.getChildren().remove(lane.getAsphalt());
       trackPane.getChildren().remove(lane.getOuterRoadMarks());

@@ -18,8 +18,8 @@ public class Main extends Application {
 			Scene scene = new Scene(root,width,height);
 			
 			primaryStage.setScene(scene);
-			primaryStage.setResizable(false);
-			primaryStage.setTitle("Traffic Simulator");
+			primaryStage.setResizable(false);// not letting the window changing
+			primaryStage.setTitle("TrafSim");
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();

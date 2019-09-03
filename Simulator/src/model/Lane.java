@@ -55,9 +55,9 @@ public class Lane
       // This will get the x and y locations of the centre of the vehicle pane
       // they are static variables that will be used in other methods,
       // so that the location is consistent
-       x = ((vehiclePane.getBoundsInParent().getMaxX()
+      x = ((vehiclePane.getBoundsInParent().getMaxX()
             + vehiclePane.getBoundsInParent().getMinX()) / 4.0) + 22;
-       y = ((vehiclePane.getBoundsInParent().getMaxY()
+      y = ((vehiclePane.getBoundsInParent().getMaxY()
             + vehiclePane.getBoundsInParent().getMinY()) / 4.0) - 2.5;
    }
 
@@ -82,24 +82,24 @@ public class Lane
             + vehiclePane.getBoundsInParent().getMinY()) / 4.0) - 2.5;
       isMoving = true;
    }
-   
-   
-   public ArrayList<Vehicle> getVehicles() {
-       return vehicles;
+
+   public ArrayList<Vehicle> getVehicles()
+   {
+      return vehicles;
    }
-   
+
    // Getter for asphalt
    public Circle getAsphalt()
    {
       return asphalt;
    }
-   
+
    // Setter for asphalt
    public void setAsphalt(Circle asphalt)
    {
       this.asphalt = asphalt;
    }
-   
+
    // Getter for inner road marks
    public Circle getInnerRoadMarks()
    {
@@ -117,13 +117,13 @@ public class Lane
    {
       return outerRoadMarks;
    }
-   
+
    // Setter for outer road marks
    public void setOuterRoadMarks(Circle outerRoadMarks)
    {
       this.outerRoadMarks = outerRoadMarks;
    }
-   
+
    // Getter for outer lane
    public Lane getOuterLane()
    {
@@ -135,13 +135,13 @@ public class Lane
    {
       this.outerLane = outerLane;
    }
-   
+
    // Getter for inner lane
    public Lane getInnerLane()
    {
       return innerLane;
    }
-   
+
    // Setter for inner lane
    public void setInnerLane(Lane innerLane)
    {
@@ -197,7 +197,7 @@ public class Lane
    {
       return isMoving;
    }
-   
+
    // Method to set speed in each vehicle
    public void changeSpeed(double newSpeed)
    {
@@ -207,7 +207,7 @@ public class Lane
       }
    }
 
-   // Method to set the density of vehicles 
+   // Method to set the density of vehicles
    public void setVehicleDensity(int value)
    {
       if (vehicleDensity != value)
@@ -240,8 +240,8 @@ public class Lane
       }
 
    }
-   
-   // This method is to convert density to a an int, so that 
+
+   // This method is to convert density to a an int, so that
    // it can then generate a certain number of vehicles
    private void calculateNumberOfVehiclesBasedOnDensity()
    {
@@ -259,20 +259,20 @@ public class Lane
       }
 
    }
-   
+
    // This method adds vehicles, by looking at the existing number of vehicles
    // and producing the number of vehicles until what was decided by the user
    public void addVehicles()
    {
       for (int i = vehicles.size(); i < getNumberOfVehicles(); i++)
       {
-//         double speed = vehicles.get(0).getSpeed();
+         // double speed = vehicles.get(0).getSpeed();
          Vehicle v = new Vehicle(this, vehiclePane, x, y);
          // The vehicle needs to be started
          v.start();
          // The vehicle is added to the ArrayList
          addVehicle(v);
-         
+
       }
    }
 
@@ -283,27 +283,27 @@ public class Lane
       int oldNumber = vehicles.size();
       for (int i = getNumberOfVehicles(); i < oldNumber; i++)
       {
-         Vehicle v = vehicles.get(0);        
+         Vehicle v = vehicles.get(0);
          // Removes vehicle from the vehicle pane
          v.removeVehicle();
          // Removes vehicle from the ArrayList
          removeVehicle(v);
       }
    }
-   
+
    // Adds a vehicle to the ArrayList
    public void addVehicle(Vehicle v)
    {
-      vehicles.add(v);      
+      vehicles.add(v);
    }
-   
+
    // Removes a vehicle from the ArrayList
    public void removeVehicle(Vehicle v)
    {
-      vehicles.remove(v);      
+      vehicles.remove(v);
    }
-   
-   // Method to generate vehicles if true, 
+
+   // Method to generate vehicles if true,
    // removes them if false
    public void setIsActive(boolean isActive)
    {

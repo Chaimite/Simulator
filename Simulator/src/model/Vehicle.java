@@ -14,7 +14,7 @@ public class Vehicle extends AnimationTimer
    private double speed = 25;// Pre-defined value speed to start
    private Lane currentLane;
    private double radius;
-   private double angle = 1.57;
+   private double angle = 1.57;// pi/2, 
 
    private Circle vehicle;
    private Pane vehiclePane;
@@ -28,9 +28,7 @@ public class Vehicle extends AnimationTimer
    private boolean startedMoving;
    private final double sensorPosition = 0.15;
 
-  
-   public Vehicle(Lane lane,
-         Pane vehiclePane, double x, double y)
+   public Vehicle(Lane lane, Pane vehiclePane, double x, double y)
    {
       super();
       vehicle = new Circle(10, Color.CORNFLOWERBLUE);
@@ -42,17 +40,16 @@ public class Vehicle extends AnimationTimer
       addVehicle();
       vehicleLane = lane.getAsphalt().getRadius();
       startedMoving = false;
-      
-      
+
       // Sets x and y values for vehicle
       vehicle.setLayoutX(x);
       vehicle.setLayoutY(y);
       // Sets x and y values for front sensor, if it
       // doesn't exist the vehicle goes to the top left corner
       frontSensor.setLayoutX(x);
-      frontSensor.setLayoutY(y);// this value of 
+      frontSensor.setLayoutY(y);// this value of
       // 5 allows for the next vehicle not be caught by it
-      
+
       // Sets x and y values for right sensor
       rightSensor.setLayoutX(x);
       rightSensor.setLayoutY(y);
@@ -65,20 +62,24 @@ public class Vehicle extends AnimationTimer
    }
 
    // Adds a vehicle and its sensors to the vehicle pane
-   public void addVehicle() {
-      vehiclePane.getChildren().addAll(vehicle, frontSensor, rightSensor, leftSensor);
+   public void addVehicle()
+   {
+      vehiclePane.getChildren().addAll(vehicle, frontSensor, rightSensor,
+            leftSensor);
    }
-   
+
    // Removes a vehicle and its sensors from the vehicle pane
-   public void removeVehicle() {
+   public void removeVehicle()
+   {
       this.stop();
-      vehiclePane.getChildren().removeAll(vehicle, frontSensor, rightSensor, leftSensor);
+      vehiclePane.getChildren().removeAll(vehicle, frontSensor, rightSensor,
+            leftSensor);
    }
-   
+
    // Gets the center x coordinate of a vehicle
    public double getX()
    {
-      return vehicle.getCenterX();
+      return 1;
    }
 
    // Sets the center x coordinate of a vehicle
@@ -104,13 +105,13 @@ public class Vehicle extends AnimationTimer
    {
       return speed;
    }
-   
+
    // Setter for speed
    public void setSpeed(double speed)
    {
       this.speed = speed;
    }
-   
+
    // Makes the vehicle advance
    public void moveInCircle(double radius)
    {
@@ -119,15 +120,15 @@ public class Vehicle extends AnimationTimer
             + (radius * Math.cos(angle));
       double newY = currentLane.getAsphalt().getCenterY()
             + (radius * Math.sin(angle));
-      
+
       // Makes the translation of the vehicle
       vehicle.setTranslateX(newX);
       vehicle.setTranslateY(newY);
-      
+
       // Positions the sensor constantly in front of the vehicle
       frontSensor(radius);
    }
-   
+
    // Creates a sensor and positioning it slightly ahead of the vehicle
    public void frontSensor(double radius)
    {
@@ -140,30 +141,32 @@ public class Vehicle extends AnimationTimer
       frontSensor.setTranslateY(frontSensorLocationY);
    }
 
-   // Creates a sensor on the right side and positions it in the right lane of the current lane
+   // Creates a sensor on the right side and positions it in the right lane of
+   // the current lane
    public void rightSensor(double radius)
    {
-      double rightSensorLocationX = currentLane.getOuterLane().getAsphalt().getCenterX()
-            + (radius * Math.cos(angle));
-      double rightSensorLocationY = currentLane.getOuterLane().getAsphalt().getCenterY()
-            + (radius * Math.sin(angle));
+      double rightSensorLocationX = currentLane.getOuterLane().getAsphalt()
+            .getCenterX() + (radius * Math.cos(angle));
+      double rightSensorLocationY = currentLane.getOuterLane().getAsphalt()
+            .getCenterY() + (radius * Math.sin(angle));
 
       rightSensor.setTranslateX(rightSensorLocationX);
       rightSensor.setTranslateY(rightSensorLocationY);
    }
 
-   // Creates a sensor on the left side and positions it in the right lane of the current lane
+   // Creates a sensor on the left side and positions it in the right lane of
+   // the current lane
    public void leftSensor(double radius)
    {
-      double leftSensorLocationX = currentLane.getInnerLane().getAsphalt().getCenterX()
-            + (radius * Math.cos(angle));
-      double leftSensorLocationY = currentLane.getInnerLane().getAsphalt().getCenterY()
-            + (radius * Math.sin(angle));
+      double leftSensorLocationX = currentLane.getInnerLane().getAsphalt()
+            .getCenterX() + (radius * Math.cos(angle));
+      double leftSensorLocationY = currentLane.getInnerLane().getAsphalt()
+            .getCenterY() + (radius * Math.sin(angle));
 
       leftSensor.setTranslateX(leftSensorLocationX);
       leftSensor.setTranslateY(leftSensorLocationY);
    }
-   
+
    // Check collisions in front of the vehicle
    private boolean isFrontBlocked()
    {
@@ -182,27 +185,28 @@ public class Vehicle extends AnimationTimer
       }
       return collision;
    }
-   
-   //Generic collision detection method
+
+   // Generic collision detection method
    private boolean collisionSensed(Circle sensor)
    {
-      Optional<Node> result =
-            (vehiclePane.getChildren().stream()
-                  .filter(n -> n instanceof Circle 
-                        && ((Circle)n).getRadius() > 2 // This value 
-                        // is for it to not confused with the size of other sensors
-                        && n != vehicle 
-                        && n.getBoundsInParent().intersects(sensor.getBoundsInParent()))
-                  .findAny());
+      Optional<Node> result = (vehiclePane.getChildren().stream()
+            .filter(n -> n instanceof Circle && ((Circle) n).getRadius() > 2
+             // This value (2)
+            // is for it to not confused with the size of
+            // other sensors from other vehicles and
+            // only filter vehicles or the blocking element
+                  && n != vehicle && n.getBoundsInParent()
+                        .intersects(sensor.getBoundsInParent()))
+            .findAny());
       return result.isPresent();
-      
+
    }
-   
+
    // Check collisions on the right side of the vehicle
    private boolean isRightSideBlocked()
    {
       boolean collision = false;
-      if(currentLane.getOuterLane() != null)
+      if (currentLane.getOuterLane() != null)
       {
          rightSensor(currentLane.getOuterLane().getAsphalt().getRadius());
          collision = collisionSensed(rightSensor);
@@ -213,12 +217,12 @@ public class Vehicle extends AnimationTimer
       }
       return collision;
    }
-   
+
    // Check collisions on the left side of the vehicle
    private boolean isLeftSideBlocked()
    {
       boolean collision = false;
-      if(currentLane.getInnerLane() != null)
+      if (currentLane.getInnerLane() != null)
       {
          leftSensor(currentLane.getInnerLane().getAsphalt().getRadius());
          collision = collisionSensed(leftSensor);
@@ -236,7 +240,7 @@ public class Vehicle extends AnimationTimer
       return radius;
    }
 
-   // Setter for radius of the asphalt 
+   // Setter for radius of the asphalt
    public void setRadius(Lane lane)
    {
       this.radius = lane.getAsphalt().getRadius();
@@ -253,25 +257,24 @@ public class Vehicle extends AnimationTimer
    {
       this.currentLane = lane;
    }
-      
-   
+
    // Handle method that is used for the logic of the movement of the vehicle
    @Override
    public void handle(long now)
    {
       // Starts moving the vehicle
 
-      if(startedMoving)
+      if (startedMoving)
       {
          if (now > lastTimerCall + One_Sec)
-         {  // Checks if the front of the vehicle is blocked
+         { // Checks if the front of the vehicle is blocked
             if (!isFrontBlocked())
             {
                moveInCircle(vehicleLane);
-               angle += getSpeed() * 0.0011;// The angle is what 
+               angle += getSpeed() * 0.0011;// The angle is what
                // controls the speed, basically the movement,
-               // the value of 0.0011 is what was found to make the 
-               // transitions smoother, so that the user of the 
+               // the value of 0.0011 is what was found to make the
+               // transitions smoother, so that the user of the
                // software can understand the movement of the vehicles
                lastTimerCall = now;
             }
@@ -286,7 +289,8 @@ public class Vehicle extends AnimationTimer
                   vehicleLane = currentLane.getAsphalt().getRadius();
                   moveInCircle(vehicleLane);
                }
-               // Checks the right side of the vehicle if the front and left side are blocked
+               // Checks the right side of the vehicle if the front and left
+               // side are blocked
                else if (!isRightSideBlocked())
                {
                   currentLane.removeVehicle(this);
@@ -294,13 +298,6 @@ public class Vehicle extends AnimationTimer
                   currentLane.addVehicle(this);
                   vehicleLane = currentLane.getAsphalt().getRadius();
                   moveInCircle(vehicleLane);
-               }
-               else
-               {
-                  // System.out.println(name + " All sides are blocked. stopping!!");
-                  // There is no need of introducing code here, since it means
-                  // that the vehicles will not advance and will stop 
-
                }
             }
          }

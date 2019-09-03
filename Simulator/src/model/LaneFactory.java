@@ -5,16 +5,19 @@ import javafx.scene.shape.Circle;
 
 public class LaneFactory
 {
-   private static final double laneSize = 25;//defined value of 25 since it allowed to fit the vehicle and blocking element well
+   private static final double laneSize = 25;// defined value of 25 since it
+                                             // allowed to fit the vehicle and
+                                             // blocking element well
    private static Lane baseLane;
-   
+
    public static Lane generateLanes(Circle asphalt, Pane vehiclePane)
    {
       baseLane = new Lane(asphalt, vehiclePane);
       double radius = asphalt.getRadius();
-      // initial setup since there is always a baselane, which will be the previous lane
+      // initial setup since there is always a base lane, which will be the
+      // previous lane
       Lane prevLane = baseLane;
-      
+
       // this is done so that a current lane as lanes on the side if they exist
       for (int i = 0; i < 4; i++)
       {
@@ -28,10 +31,10 @@ public class LaneFactory
          // sets what was the previous lane as the current
          prevLane = currentLane;
       }
-      
+
       return baseLane;
    }
-   
+
    public static Lane getBaseLane()
    {
       return baseLane;
