@@ -14,6 +14,7 @@ public class Carriageway
    private Lane baseLane;
    private Lane ghostLane;
    private Lane currentLane;
+   private double speed;
 
    public Carriageway(StackPane trackPane, Circle asphalt, Pane vehiclePane)
    {
@@ -36,9 +37,8 @@ public class Carriageway
       {
          return;// does nothing if this condition is not satisfied
       }
-      // changes the speed of vehicles in the ghost lane
-      double speed = baseLane.getVehicles().get(0).getSpeed();
       ghostLane.changeSpeed(speed);
+      
       //adds new lane to stack and sets it as active
       addLaneToStack(ghostLane);
       ghostLane.setIsActive(true);
@@ -126,6 +126,7 @@ public class Carriageway
    // establishes the current lane has the outer lane if there is a lane
    public void changeSpeed(double newSpeed)
    {
+      speed = newSpeed;
       Lane currentLane = baseLane;
       do{
          currentLane.changeSpeed(newSpeed);;
